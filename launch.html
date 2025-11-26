@@ -1,10 +1,97 @@
-<video controls>
-  <source src="St_Philips_cogito.mp4" type="video/mp4">
-</video>
-...
-<button class="next-btn" onclick="goToNamePage()">Start</button>
-<script>
-  function goToNamePage() {
-    window.location.href = "name.html";
-  }
-</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fullscreen Video with Center Start Button</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;       /* FIXED — no more global padding */
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: black;
+    }
+
+    .video-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Center translucent button */
+    .center-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 80px 160px; /* 100% larger from your last version */
+      font-size: 2.4rem;
+      color: white;
+      background: rgba(0, 0, 0, 0.55);
+      border: none;
+      border-radius: 12px; /* less rounded */
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+      transition: 0.3s ease;
+      opacity: 0;
+      animation: fadeIn 2.5s ease forwards 1s;
+    }
+
+    .center-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      color: black;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 600px) {
+      .center-btn {
+        padding: 50px 110px;
+        font-size: 1.8rem;
+      }
+    }
+
+    /* Fade-in animations */
+    body {
+      opacity: 0;
+      animation: fadeIn 1.5s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="video-container">
+    <video autoplay muted playsinline loop>
+      <source src="St_Philips_cogito.mp4" type="video/mp4" />
+    </video>
+
+    <button class="center-btn" onclick="goToNamePage()">Start</button>
+  </div>
+
+  <script>
+    function goToNamePage() {
+      window.location.href = "name.html";
+    }
+  </script>
+</body>
+</html>
