@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>St Philip's Gymnasium Video</title>
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background: black;
+            overflow: hidden;
+        }
+
+        /* Full-screen video */
+        #video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Button container (circle) */
+        #playButton {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+
+            background: rgba(255, 255, 255, 0.12); /* semi-transparent */
+            border: 3px solid rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(6px);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            cursor: pointer;
+            z-index: 10;
+            user-select: none;
+
+            opacity: 0;
+            animation: fadeIn 1.3s ease forwards;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.25);
+            transition: transform 0.25s ease, background 0.25s ease;
+        }
+
+        /* Triangle (pure CSS) */
+        #playButton::before {
+            content: "";
+            display: block;
+
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 30px 0 30px 50px;
+            border-color: transparent transparent transparent rgba(255,255,255,0.85);
+        }
+
+        /* Hover animation */
+        #playButton:hover {
+            transform: translate(-50%, -50%) scale(1.12);
+            background: rgba(255, 255, 255, 0.20);
+        }
+
+        /* Fade-in animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.85); }
+            to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Play Button -->
+    <div id="playButton"></div>
+
+    <!-- Video -->
+    <video id="video" preload="auto">
+        <source src="St_Philips_cogito.mp4" type="video/mp4">
+        Your browser does not support HTML5 video.
+    </video>
+
+    <script>
+        const video = document.getElementById('video');
+        const playButton = document.getElementById('playButton');
+
+        // Start video when play button is clicked
+        playButton.addEventListener('click', () => {
+            playButton.style.display = 'none';
+            video.play();
+        });
+
+        // Redirect after the video ends
+        video.addEventListener('ended', () => {
+            window.location.href =
+              "https://apfthomas-cpu.github.io/cogito_intelligo_prompt/";
+        });
+    </script>
+
+</body>
+</html>

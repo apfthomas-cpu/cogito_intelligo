@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Teacher Dashboard – Cogito, Intelligo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: "Fredoka", sans-serif;
+      background: #eef1f5;
+      color: #333;
+    }
+    header {
+      background: #2a3f54;
+      color: white;
+      padding: 1.5rem;
+      text-align: center;
+      font-size: 1.8rem;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    select {
+      padding: 0.7rem;
+      border-radius: 0.5rem;
+      border: 1px solid #aaa;
+      font-size: 1rem;
+      background: #fff;
+    }
+    .section-title {
+      margin-top: 2rem;
+      font-size: 1.4rem;
+      font-weight: 500;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      background: #fff;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    }
+    th, td {
+      padding: 0.6rem 0.8rem;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+      font-size: 0.95rem;
+    }
+    th {
+      background: #2a3f54;
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    tr:nth-child(even) td {
+      background: #f8f9fb;
+    }
+    canvas {
+      margin-top: 1rem;
+      background: white;
+      padding: 1rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    }
+    .small {
+      font-size: 0.85rem;
+      color: #666;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>Teacher Dashboard – Cogito, Intelligo</header>
+
+<div class="container">
+
+  <div class="filters">
+    <select id="classFilter">
+      <option value="">Filter by Class</option>
+    </select>
+
+    <select id="studentFilter">
+      <option value="">Filter by Student</option>
+    </select>
+
+    <select id="quizFilter">
+      <option value="">Filter by Quiz</option>
+    </select>
+  </div>
+
+  <h3 class="section-title">Student Attempts</h3>
+  <p class="small">Filtered by the selections above. Each row represents one completed quiz attempt.</p>
+  <table id="resultsTable">
+    <thead>
+      <tr>
+        <th>Date & Time</th>
+        <th>Student</th>
+        <th>Class</th>
+        <th>Quiz</th>
+        <th>Total Score</th>
+        <th>Section 2 (Understanding)</th>
+        <th>Section 3 (Evaluation)</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <h3 class="section-title">Total Score Over Time</h3>
+  <p class="small">Shows total scores for the filtered attempts in chronological order.</p>
+  <canvas id="scoreChart"></canvas>
+
+  <h3 class="section-title">Average Score per Quiz</h3>
+  <p class="small">Compares average total scores for each quiz within the current filter.</p>
+  <canvas id="quizChart"></canvas>
+
+  <h3 class="section-title">AO2 vs AO3 – Selected Student</h3>
+  <p class="small">Average Section 2 (Understanding) vs Section 3 (Evaluation and reasoning) scores for the selected student.</p>
+  <canvas id="aoChart"></canvas>
+
+</div>
+
+<script>
+  // 🔗 REPLACE this with your actual Apps Script Web App URL
+  const JSON_URL = "https://script.google.com/macros/u/2/s/AKfycbwtCHBNyS0r9GX73rpcy-CH8GMyycO4T1rH86HdQQc15_WDCCBPCoo_uarteWW0YXyN/exec";
+
+  let allData = [];
+
+  // Fetch data from Google Sheets via Apps Script
+  fetch(JSON_URL)
+    .then(res => res.json())
+    .then(data => {
+      // Normalise numeric fields
+      allData = data.map(row => ({
+        ...row,
+        s1Score: Number(row.s1Score || 0),
+        s2Score: Number(row.s2Score || 0),
+        s3Score: Number(row.s3Score || 0),
+        totalScore: Number(row.totalScore || 0),
+        Timestamp: row.Timestamp
+      }));
+      populateFilters(allData);
+      updateDashboard();
+    })
+    .catch(err => {
+      console.error("Failed to load data from JSON_URL:", err);
+      alert("Could not load data from Google Sheets. Check the Web App URL and permissions.");
+    });
+
+  // Populate dropdown filters
+  function populateFilters(data) {
+    const classes = [...new Set(data.map(r => r.studentClass).filter(Boolean))].sort();
+    const students = [...new Set(data.map(r => r.studentName).filter(Boolean))].sort();
+    const quizzes = [...new Set(data.map(r => r.quizName).filter(Boolean))].sort();
+
+    fillSelect("classFilter", classes, "Filter by Class");
+    fillSelect("studentFilter", students, "Filter by Student");
+    fillSelect("quizFilter", quizzes, "Filter by Quiz");
+  }
+
+  function fillSelect(id, values, placeholder) {
+    const select = document.getElementById(id);
+    select.innerHTML = `<option value="">${placeholder}</option>`;
+    values.forEach(v => {
+      const opt = document.createElement("option");
+      opt.value = v;
+      opt.textContent = v;
+      select.appendChild(opt);
+    });
+  }
+
+  // Update dashboard when filters change
+  document.querySelectorAll("select").forEach(sel =>
+    sel.addEventListener("change", updateDashboard)
+  );
+
+  function updateDashboard() {
+    const cls = document.getElementById("classFilter").value;
+    const stu = document.getElementById("studentFilter").value;
+    const quiz = document.getElementById("quizFilter").value;
+
+    let filtered = allData.slice();
+
+    if (cls) filtered = filtered.filter(r => r.studentClass === cls);
+    if (stu) filtered = filtered.filter(r => r.studentName === stu);
+    if (quiz) filtered = filtered.filter(r => r.quizName === quiz);
+
+    // Sort by timestamp (oldest to newest)
+    filtered.sort((a, b) => new Date(a.Timestamp) - new Date(b.Timestamp));
+
+    renderTable(filtered);
+    renderScoreChart(filtered);
+    renderQuizChart(filtered);
+
+    // AO2 vs AO3 only really makes sense if a specific student is chosen
+    renderAOChart(allData, stu);
+  }
+
+  /* ---------- TABLE RENDERING ---------- */
+
+  function renderTable(rows) {
+    const tbody = document.querySelector("#resultsTable tbody");
+    tbody.innerHTML = "";
+
+    rows.forEach(r => {
+      const tr = document.createElement("tr");
+      const dateStr = r.Timestamp ? new Date(r.Timestamp).toLocaleString() : "";
+      tr.innerHTML = `
+        <td>${dateStr}</td>
+        <td>${r.studentName || ""}</td>
+        <td>${r.studentClass || ""}</td>
+        <td>${r.quizName || ""}</td>
+        <td>${r.totalScore}</td>
+        <td>${r.s2Score}</td>
+        <td>${r.s3Score}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    if (rows.length === 0) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td colspan="7" style="text-align:center; padding:1rem;">No attempts match the current filters.</td>`;
+      tbody.appendChild(tr);
+    }
+  }
+
+  /* ---------- CHART: SCORE OVER TIME ---------- */
+
+  let scoreChart;
+
+  function renderScoreChart(rows) {
+    const ctx = document.getElementById("scoreChart").getContext("2d");
+
+    const labels = rows.map(r => r.Timestamp ? new Date(r.Timestamp).toLocaleString() : "");
+    const scores = rows.map(r => r.totalScore);
+
+    if (scoreChart) scoreChart.destroy();
+
+    scoreChart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels,
+        datasets: [{
+          label: "Total Score",
+          data: scores,
+          borderWidth: 2,
+          pointRadius: 4,
+          fill: false
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+  }
+
+  /* ---------- CHART: AVERAGE SCORE PER QUIZ ---------- */
+
+  let quizChart;
+
+  function renderQuizChart(rows) {
+    const ctx = document.getElementById("quizChart").getContext("2d");
+
+    const quizGroups = {};
+    rows.forEach(r => {
+      if (!quizGroups[r.quizName]) quizGroups[r.quizName] = [];
+      quizGroups[r.quizName].push(r.totalScore);
+    });
+
+    const labels = Object.keys(quizGroups);
+    const averages = labels.map(q => {
+      const arr = quizGroups[q];
+      return arr.reduce((a,b) => a + b, 0) / arr.length;
+    });
+
+    if (quizChart) quizChart.destroy();
+
+    quizChart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels,
+        datasets: [{
+          label: "Average Total Score",
+          data: averages,
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+  }
+
+  /* ---------- CHART: AO2 vs AO3 FOR SELECTED STUDENT ---------- */
+
+  let aoChart;
+
+  function renderAOChart(data, studentName) {
+    const ctx = document.getElementById("aoChart").getContext("2d");
+
+    // Hide chart if no student chosen
+    if (!studentName) {
+      if (aoChart) aoChart.destroy();
+      const canvas = document.getElementById("aoChart");
+      const tempCtx = canvas.getContext("2d");
+      tempCtx.clearRect(0, 0, canvas.width, canvas.height);
+      return;
+    }
+
+    const rows = data.filter(r => r.studentName === studentName);
+
+    const ao2 = rows.map(r => r.s2Score);
+    const ao3 = rows.map(r => r.s3Score);
+
+    const avgAO2 = ao2.length ? ao2.reduce((a,b)=>a+b,0)/ao2.length : 0;
+    const avgAO3 = ao3.length ? ao3.reduce((a,b)=>a+b,0)/ao3.length : 0;
+
+    if (aoChart) aoChart.destroy();
+
+    aoChart = new Chart(ctx, {
+      type: "radar",
+      data: {
+        labels: ["Understanding (Section 2)", "Evaluation (Section 3)"],
+        datasets: [{
+          label: `${studentName} – Average scores`,
+          data: [avgAO2, avgAO3],
+          borderWidth: 2,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          r: {
+            beginAtZero: true,
+            suggestedMax: 20
+          }
+        }
+      }
+    });
+  }
+</script>
+
+</body>
+</html>

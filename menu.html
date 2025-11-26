@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cogito, Intelligo – Quiz Menu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Fredoka:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --title-font: 'Luckiest Guy', cursive;
+      --body-font: 'Fredoka', sans-serif;
+      --glass: rgba(0,0,0,0.68);
+      --text-light: #fff;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--body-font);
+      background: url("Background.jpg") no-repeat center center fixed;
+      background-size: cover;
+      color: var(--text-light);
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 4rem auto;
+      padding: 2rem;
+      background: var(--glass);
+      border-radius: 1rem;
+      backdrop-filter: blur(5px);
+      animation: fadeIn 1s ease;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+
+    h1 {
+      font-family: var(--title-font);
+      font-size: 3rem;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      text-align: center;
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+
+    .quiz-list {
+      margin-top: 2rem;
+      display: grid;
+      gap: 1.2rem;
+    }
+
+    .quiz-btn {
+      width: 100%;
+      padding: 1rem 1.6rem;
+      border-radius: 0.8rem;
+      border: none;
+      background: #8aaaaf;
+      color: #000;
+      font-family: var(--body-font);
+      font-size: 1.15rem;
+      cursor: pointer;
+      text-align: left;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .quiz-btn:hover {
+      transform: scale(1.03);
+      background: #9cc3c8;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Cogito, Intelligo</h1>
+  <p id="welcomeText">Welcome!</p>
+
+  <div class="quiz-list">
+    <button class="quiz-btn" onclick="openQuiz('annunciation.html')">
+      ⭐ The Annunciation – Gabriel Visits Mary
+    </button>
+
+    <button class="quiz-btn" onclick="openQuiz('baptism.html')">
+      ⭐ The Baptism of Jesus
+    </button>
+
+    <button class="quiz-btn" onclick="openQuiz('circumcision.html')">
+      ⭐ The Circumcision and Naming of Jesus
+    </button>
+
+    <button class="quiz-btn" onclick="openQuiz('flight_egypt.html')">
+      ⭐ The Flight into Egypt & Massacre of the Innocents
+    </button>
+
+    <button class="quiz-btn" onclick="openQuiz('finding_temple.html')">
+      ⭐ The Finding of the Boy Jesus in the Temple
+    </button>
+
+    <button class="quiz-btn" onclick="openQuiz('isaiah_prophecies.html')">
+      ⭐ Isaiah’s Prophecies of the Messiah
+    </button>
+
+    <button class="quiz-btn" onclick="openQuiz('incarnation_doctrine.html')">
+      ⭐ The Incarnation as Doctrine – “The Word Made Flesh”
+    </button>
+  </div>
+</div>
+
+<script>
+  // Retrieve user data
+  const studentName  = localStorage.getItem("ci_studentName");
+  const studentClass = localStorage.getItem("ci_studentClass");
+
+  const welcomeText = document.getElementById("welcomeText");
+
+  // If student bypassed the Name Page, send them back
+  if (!studentName || !studentClass) {
+    window.location.href = "name.html";
+  } else {
+    welcomeText.textContent = `Welcome, ${studentName} (${studentClass}). Choose a quiz to begin.`;
+  }
+
+  function openQuiz(filename) {
+    window.location.href = filename;
+  }
+</script>
+
+</body>
+</html>

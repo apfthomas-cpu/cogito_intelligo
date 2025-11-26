@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cogito, Intelligo – Identify Yourself</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Fredoka:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --title-font: 'Luckiest Guy', cursive;
+      --body-font: 'Fredoka', sans-serif;
+      --glass: rgba(0,0,0,0.68);
+      --text-light: #fff;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--body-font);
+      background: url("Background.jpg") no-repeat center center fixed;
+      background-size: cover;
+      color: var(--text-light);
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 4rem auto;
+      padding: 2rem;
+      background: var(--glass);
+      border-radius: 1rem;
+      backdrop-filter: blur(5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      animation: fadeIn 1s ease;
+    }
+
+    h1 {
+      font-family: var(--title-font);
+      font-size: 2.5rem;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      text-align: center;
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+      font-size: 1.1rem;
+    }
+
+    label {
+      display: block;
+      margin: 1rem 0 0.3rem;
+      font-weight: 500;
+    }
+
+    select {
+      width: 100%;
+      padding: 0.7rem;
+      border-radius: 0.5rem;
+      border: none;
+      font-family: var(--body-font);
+      font-size: 1rem;
+    }
+
+    .next-btn {
+      margin-top: 2rem;
+      padding: 0.9rem 1.8rem;
+      border-radius: 0.8rem;
+      border: none;
+      background: #8aaaaf;
+      color: #000;
+      font-family: var(--body-font);
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .next-btn:hover {
+      transform: scale(1.05);
+      background: #9cc3c8;
+    }
+
+    .error {
+      color: #ffbaba;
+      margin-top: 0.5rem;
+      text-align: center;
+      min-height: 1.2rem;
+      font-size: 1rem;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Who is taking the quiz?</h1>
+  <p>Please choose your class and your name to continue.</p>
+
+  <!-- CLASS DROPDOWN -->
+  <label for="classSelect">Class</label>
+  <select id="classSelect">
+    <option value="">-- Select your class --</option>
+    <option value="7A">7A</option>
+    <option value="7B">7B</option>
+    <option value="8A">8A</option>
+    <option value="8B">8B</option>
+    <!-- Add more classes here -->
+  </select>
+
+  <!-- NAME DROPDOWN -->
+  <label for="nameSelect">Name</label>
+  <select id="nameSelect">
+    <option value="">-- First choose your class --</option>
+  </select>
+
+  <div class="error" id="errorMsg"></div>
+
+  <button class="next-btn" onclick="saveAndContinue()">Continue</button>
+</div>
+
+<script>
+  /** 🔽 EDIT THIS PART WITH YOUR REAL CLASS LISTS 🔽 **/
+  const studentsByClass = {
+    "7A": ["Alice", "Ben", "Chloe", "Daniel"],
+    "7B": ["Ella", "Finn", "Grace", "Harry"],
+    "8A": ["Isla", "Jack", "Kian", "Lily"],
+    "8B": ["Mia", "Noah", "Olivia", "Peter"]
+  };
+  /** 🔼 EDIT THIS PART WITH YOUR REAL CLASS LISTS 🔼 **/
+
+  const classSelect = document.getElementById("classSelect");
+  const nameSelect  = document.getElementById("nameSelect");
+  const errorMsg    = document.getElementById("errorMsg");
+
+  // Populate names when class is changed
+  classSelect.addEventListener("change", () => {
+    const cls = classSelect.value;
+    nameSelect.innerHTML = "";
+
+    if (!cls || !studentsByClass[cls]) {
+      nameSelect.innerHTML = '<option value="">-- First choose your class --</option>';
+      return;
+    }
+
+    nameSelect.innerHTML = '<option value="">-- Select your name --</option>';
+    studentsByClass[cls].forEach(name => {
+      const opt = document.createElement("option");
+      opt.value = name;
+      opt.textContent = name;
+      nameSelect.appendChild(opt);
+    });
+  });
+
+  // Save name + class, then move to menu
+  function saveAndContinue() {
+    const cls = classSelect.value;
+    const name = nameSelect.value;
+
+    if (!cls || !name) {
+      errorMsg.textContent = "Please select BOTH your class and your name.";
+      return;
+    }
+
+    localStorage.setItem("ci_studentClass", cls);
+    localStorage.setItem("ci_studentName", name);
+
+    window.location.href = "menu.html";
+  }
+</script>
+
+</body>
+</html>

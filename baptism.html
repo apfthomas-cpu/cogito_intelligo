@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cogito, Intelligo – The Baptism of Jesus</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Fredoka:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --title-font: 'Luckiest Guy', cursive;
+      --body-font: 'Fredoka', sans-serif;
+      --glass: rgba(0,0,0,0.68);
+      --text-light: #fff;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--body-font);
+      background: url("Background.jpg") no-repeat center center fixed;
+      background-size: cover;
+      color: var(--text-light);
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: var(--glass);
+      border-radius: 1rem;
+    }
+
+    h1 {
+      font-family: var(--title-font);
+      letter-spacing: 1px;
+      text-align: center;
+      font-size: 3rem;
+      margin: 0 0 1rem;
+    }
+
+    h2 {
+      text-align: center;
+      margin: 0 0 1.2rem;
+      font-weight: 500;
+    }
+
+    .subtitle {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-size: 1.1rem;
+    }
+
+    .question {
+      margin-bottom: 1.4rem;
+    }
+
+    textarea,
+    input[type="text"] {
+      width: 100%;
+      padding: 0.6rem;
+      border-radius: 0.5rem;
+      border: none;
+      background: #fff;
+      color: #000;
+      margin-top: 0.3rem;
+      resize: vertical;
+      font-family: var(--body-font);
+    }
+
+    .options label {
+      display: block;
+      margin: 0.25rem 0;
+      cursor: pointer;
+    }
+
+    button {
+      padding: 0.7rem 1.4rem;
+      border-radius: 0.6rem;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-top: 0.5rem;
+      font-family: var(--body-font);
+    }
+
+    .next-btn {
+      background: #8aaaaf;
+      color: #000;
+      display: block;
+      margin: 0.75rem auto 0;
+    }
+
+    .back-btn {
+      background: #e5e7eb;
+      color: #000;
+      margin-right: 0.5rem;
+    }
+
+    .score-box {
+      text-align: center;
+      padding: 1rem;
+      margin-top: 1rem;
+      background: rgba(255,255,255,0.18);
+      border-radius: 0.7rem;
+    }
+
+    .score-box span {
+      font-weight: 600;
+      font-size: 1.3rem;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .rubric-box {
+      max-width: 650px;
+      margin: 1.5rem auto 0;
+      padding: 1.5rem 1.8rem;
+      background: #ffffff;
+      color: #000000;
+      border-radius: 0.9rem;
+      box-shadow: 0 12px 25px rgba(0,0,0,0.35);
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    /* ------------------ ANIMATION STYLES ------------------ */
+
+    .section {
+      opacity: 1;
+      transform: translateX(0);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .section.hidden {
+      display: none;
+    }
+
+    .fade-out-left {
+      opacity: 0 !important;
+      transform: translateX(-50px) !important;
+    }
+
+    .fade-in-right {
+      opacity: 0;
+      transform: translateX(50px);
+      animation: fadeSlideIn 0.6s forwards ease;
+    }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateX(50px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ------------------ LAUNCH / INTRO ------------------ -->
+<div class="container section" id="launch">
+  <h1>Cogito, Intelligo</h1>
+  <h2>The Baptism of Jesus</h2>
+
+  <div class="rubric-box">
+    <p>This assessment will check your knowledge and understanding of the Baptism of Jesus, and how well you can evaluate its meaning for Christians.</p>
+    <p>Answer every question carefully. You must complete each section before you can move on.</p>
+  </div>
+
+  <button class="next-btn" onclick="startQuiz()">NEXT</button>
+</div>
+
+<!-- ------------------ SECTION 1 – KNOWLEDGE ------------------ -->
+<div class="container section hidden" id="section1">
+  <h1>Cogito, Intelligo</h1>
+  <h2>Section 1 – Knowledge</h2>
+  <p class="subtitle">Three quick questions to test key facts.</p>
+
+  <div class="question auto" data-type="choice" data-correct="a" data-q="q1">
+    <p>1. Where was Jesus baptised?</p>
+    <div class="options">
+      <label><input type="radio" name="q1" value="a"> In the River Jordan</label>
+      <label><input type="radio" name="q1" value="b"> In the Red Sea</label>
+      <label><input type="radio" name="q1" value="c"> In the Sea of Galilee</label>
+      <label><input type="radio" name="q1" value="d"> In the River Nile</label>
+    </div>
+  </div>
+
+  <div class="question auto" data-type="choice" data-correct="a" data-q="q2">
+    <p>2. Who baptised Jesus?</p>
+    <div class="options">
+      <label><input type="radio" name="q2" value="a"> John the Baptist</label>
+      <label><input type="radio" name="q2" value="b"> Peter</label>
+      <label><input type="radio" name="q2" value="c"> Moses</label>
+      <label><input type="radio" name="q2" value="d"> Elijah</label>
+    </div>
+  </div>
+
+  <div class="question auto" data-type="choice" data-correct="a" data-q="q3">
+    <p>3. What visible sign showed the presence of the Holy Spirit at Jesus’ baptism?</p>
+    <div class="options">
+      <label><input type="radio" name="q3" value="a"> A dove descending on him</label>
+      <label><input type="radio" name="q3" value="b"> A burning bush</label>
+      <label><input type="radio" name="q3" value="c"> A star shining above him</label>
+      <label><input type="radio" name="q3" value="d"> A pillar of fire</label>
+    </div>
+  </div>
+
+  <button class="next-btn" onclick="nextSection(1)">Next →</button>
+</div>
+
+<!-- ------------------ SECTION 2 – UNDERSTANDING ------------------ -->
+<div class="container section hidden" id="section2">
+  <h2>Section 2 – Understanding</h2>
+  <p class="subtitle">Explain what the Baptism of Jesus means.</p>
+
+  <div class="question ao2" data-q="q4">
+    <p><strong>4. Explain why Jesus chose to be baptised by John in the River Jordan. (6 marks)</strong></p>
+    <textarea name="q4"></textarea>
+  </div>
+
+  <div class="question ao2" data-q="q5">
+    <p><strong>5. Describe what the heavens opening and the Spirit descending like a dove symbolise in the Baptism of Jesus. (6 marks)</strong></p>
+    <textarea name="q5"></textarea>
+  </div>
+
+  <div class="question ao2" data-q="q6">
+    <p><strong>6. Explain the meaning of the voice from heaven saying, “You are my Son, the Beloved; with you I am well pleased.” (6 marks)</strong></p>
+    <textarea name="q6"></textarea>
+  </div>
+
+  <button class="back-btn" onclick="prevSection(2)">← Back</button>
+  <button class="next-btn" onclick="nextSection(2)">Next →</button>
+</div>
+
+<!-- ------------------ SECTION 3 – EVALUATION & REASONING ------------------ -->
+<div class="container section hidden" id="section3">
+  <h2>Section 3 – Evaluation and reasoning</h2>
+  <p class="subtitle">Give a thoughtful judgement about the Baptism of Jesus.</p>
+
+  <div class="question ao3" data-q="q7">
+    <p><strong>7. “The Baptism of Jesus was necessary for his mission.” Do you agree? (8 marks)</strong><br>
+    Give reasons for your answer, showing that you have considered more than one point of view.</p>
+    <textarea name="q7"></textarea>
+  </div>
+
+  <button class="back-btn" onclick="prevSection(3)">← Back</button>
+  <button class="next-btn" onclick="finishQuiz()">Finish Quiz</button>
+</div>
+
+<!-- ------------------ FINAL RESULTS ------------------ -->
+<div class="container section hidden" id="final">
+  <h2>Your Results</h2>
+
+  <div class="score-box">
+    <p>Section 1: <strong>Knowledge</strong> – <span id="s1score">0</span> / 3</p>
+
+    <p>Section 2: <strong>Understanding</strong> – <span id="s2score">0</span> / 18</p>
+    <p><strong>Feedback:</strong></p>
+    <div id="ao2-feedback"></div>
+
+    <p style="margin-top:1.5rem;">Section 3: <strong>Evaluation and reasoning</strong> – <span id="s3score">0</span> / 8</p>
+    <p><strong>Feedback:</strong></p>
+    <div id="ao3-feedback"></div>
+
+    <hr style="border:0; border-top:1px solid rgba(255,255,255,0.3); margin:1rem 0;">
+
+    <p><strong>Total Score: <span id="final-score">0</span> / 29</strong></p>
+  </div>
+</div>
+
+<script>
+/* ------------------ CONSTANTS ------------------ */
+const QUIZ_NAME = "The Baptism of Jesus";
+const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbwtCHBNyS0r9GX73rpcy-CH8GMyycO4T1rH86HdQQc15_WDCCBPCoo_uarteWW0YXyN/exec";
+
+/* ------------------ ANIMATIONS ------------------ */
+
+function animateSectionTransition(currentId, nextId) {
+  const current = document.getElementById(currentId);
+  const next = document.getElementById(nextId);
+
+  current.classList.add("fade-out-left");
+
+  setTimeout(() => {
+    current.classList.add("hidden");
+    current.classList.remove("fade-out-left");
+
+    next.classList.remove("hidden");
+    next.classList.add("fade-in-right");
+
+    setTimeout(() => next.classList.remove("fade-in-right"), 600);
+  }, 600);
+}
+
+function startQuiz() { animateSectionTransition("launch", "section1"); }
+function nextSection(n) { animateSectionTransition("section" + n, "section" + (n + 1)); }
+function prevSection(n) { animateSectionTransition("section" + n, "section" + (n - 1)); }
+
+/* ------------------ TEXT ANALYSIS HELPERS ------------------ */
+
+function analyseText(originalText) {
+  const text = originalText || "";
+  const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;
+
+  const patterns = {
+    connectives: [
+      { regex: /\bbecause\b/gi, label: "reasoning connective" },
+      { regex: /\btherefore\b/gi, label: "reasoning connective" },
+      { regex: /\bconsequently\b/gi, label: "reasoning connective" },
+      { regex: /\bas a result\b/gi, label: "reasoning connective" },
+      { regex: /\bthis shows\b/gi, label: "reasoning connective" }
+    ],
+    balance: [
+      { regex: /\bhowever\b/gi, label: "balancing phrase" },
+      { regex: /\bon the other hand\b/gi, label: "balancing phrase" },
+      { regex: /\bothers (believe|think)\b/gi, label: "balancing phrase" },
+      { regex: /\bsome christians (believe|think)\b/gi, label: "balancing phrase" }
+    ],
+    examples: [
+      { regex: /\bjesus\b/gi, label: "reference to Jesus" },
+      { regex: /\bjohn the baptist\b/gi, label: "reference to John the Baptist" },
+      { regex: /\bjohn\b/gi, label: "reference to John" },
+      { regex: /\bjordan\b/gi, label: "reference to the River Jordan" },
+      { regex: /\briver jordan\b/gi, label: "reference to the River Jordan" },
+      { regex: /\bholy spirit\b/gi, label: "reference to the Holy Spirit" },
+      { regex: /\bheaven(s)? opened\b/gi, label: "reference to the heavens opening" },
+      { regex: /\bdove\b/gi, label: "reference to the dove" },
+      { regex: /\bvoice from heaven\b/gi, label: "reference to the heavenly voice" },
+      { regex: /\bbeloved\b/gi, label: "reference to 'beloved Son'" },
+      { regex: /\bson of god\b/gi, label: "reference to Son of God" },
+      { regex: /\btrinity\b/gi, label: "reference to the Trinity" }
+    ],
+    structure: [
+      { regex: /\bfirstly\b/gi, label: "signposting word" },
+      { regex: /\bsecondly\b/gi, label: "signposting word" },
+      { regex: /\bfinally\b/gi, label: "signposting word" },
+      { regex: /\bin conclusion\b/gi, label: "signposting phrase" },
+      { regex: /\boverall\b/gi, label: "signposting word" }
+    ]
+  };
+
+  function getMatches(patternList) {
+    const found = [];
+    patternList.forEach(p => {
+      const m = text.match(p.regex);
+      if (m) {
+        m.forEach(match => {
+          found.push({ phrase: match, label: p.label });
+        });
+      }
+    });
+    // dedupe by phrase
+    const unique = [];
+    const seen = new Set();
+    for (const item of found) {
+      const key = item.phrase.toLowerCase();
+      if (!seen.has(key)) {
+        seen.add(key);
+        unique.push(item);
+      }
+    }
+    return unique;
+  }
+
+  return {
+    wordCount,
+    connectives: getMatches(patterns.connectives),
+    balance: getMatches(patterns.balance),
+    examples: getMatches(patterns.examples),
+    structure: getMatches(patterns.structure)
+  };
+}
+
+function buildStrengths(text, forEvaluation) {
+  const a = analyseText(text);
+  const strengths = [];
+
+  if (a.wordCount > 80) {
+    strengths.push(`Your answer was quite detailed (around ${a.wordCount} words), which allowed you to explain several ideas clearly.`);
+  }
+
+  if (a.connectives.length > 0) {
+    const phrases = a.connectives.slice(0, 3).map(x => `"${x.phrase}"`).join(", ");
+    strengths.push(`You used reasoning connectives such as ${phrases}, which helped you to explain your ideas clearly.`);
+  }
+
+  if (forEvaluation && a.balance.length > 0) {
+    const phrases = a.balance.slice(0, 2).map(x => `"${x.phrase}"`).join(", ");
+    strengths.push(`You showed balance in your argument by including phrases like ${phrases}.`);
+  }
+
+  if (a.examples.length > 0) {
+    const phrases = a.examples.slice(0, 4).map(x => `"${x.phrase}"`).join(", ");
+    strengths.push(`You referred to key details from the Baptism of Jesus (for example ${phrases}), which shows good use of the story and doctrine.`);
+  }
+
+  if (a.structure.length > 0) {
+    const phrases = a.structure.slice(0, 3).map(x => `"${x.phrase}"`).join(", ");
+    strengths.push(`You structured your answer using signposting words such as ${phrases}, which makes your writing easier to follow.`);
+  }
+
+  if (strengths.length === 0 && a.wordCount > 0) {
+    strengths.push("You made at least one relevant point related to the question.");
+  }
+
+  if (strengths.length === 0 && a.wordCount === 0) {
+    strengths.push("No strengths could be identified because no meaningful answer was provided.");
+  }
+
+  return strengths;
+}
+
+function buildImprovements(text, forEvaluation) {
+  const a = analyseText(text);
+  const improvements = [];
+
+  if (a.wordCount < 60 && a.wordCount > 0) {
+    improvements.push(`Try to write in more depth – at the moment your answer is quite short (about ${a.wordCount} words). Aim to explain each idea more fully.`);
+  } else if (a.wordCount === 0) {
+    improvements.push("You need to write an answer so that your ideas can be assessed.");
+  }
+
+  if (a.connectives.length === 0) {
+    improvements.push('Add reasoning connectives such as "because", "therefore" or "this shows" to make your explanation clearer.');
+  }
+
+  if (forEvaluation && a.balance.length === 0) {
+    improvements.push('For a stronger evaluation, try to include another point of view using phrases like "however" or "on the other hand".');
+  }
+
+  if (a.examples.length === 0) {
+    improvements.push('Include more specific examples from the Baptism of Jesus or Christian teaching, such as "John the Baptist", "River Jordan" or "Holy Spirit".');
+  }
+
+  if (a.structure.length === 0 && a.wordCount > 0) {
+    improvements.push('Improve the structure of your answer by using signposting words like "firstly", "secondly" and "in conclusion".');
+  }
+
+  if (improvements.length === 0 && a.wordCount > 0) {
+    improvements.push("You can refine your writing even more by checking punctuation and making sure each point links clearly back to the question.");
+  }
+
+  return improvements;
+}
+
+/* ------------------ AO2 SCORING ------------------ */
+
+function scoreAO2(text) {
+  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+  if (words > 120) return 6;
+  if (words > 90)  return 5;
+  if (words > 60)  return 4;
+  if (words > 40)  return 3;
+  if (words > 20)  return 2;
+  if (words > 5)   return 1;
+  return 0;
+}
+
+/* ------------------ AO3 SCORING ------------------ */
+
+function scoreAO3(text) {
+  const t = text.trim();
+  if (t.length < 10) return 0;
+
+  const lower = t.toLowerCase();
+  const words = t.split(/\s+/).length;
+
+  const balance = (lower.includes("however") || lower.includes("on the other hand") || lower.includes("others believe") || lower.includes("some christians believe"));
+  const connectives = (lower.match(/because|therefore|consequently|this shows|as a result/g) || []).length;
+  const examples = (lower.match(/jesus|john the baptist|john|jordan|river jordan|holy spirit|heaven|dove|trinity|mission/g) || []).length;
+  const structure = (lower.match(/firstly|secondly|finally|in conclusion|overall/g) || []).length;
+
+  let score = 1;
+
+  if (words > 120 && balance && connectives >= 3 && examples >= 2 && structure >= 1) score = 8;
+  else if (words > 100 && balance && connectives >= 2 && examples >= 2) score = 7;
+  else if (words > 80 && balance && connectives >= 1 && examples >= 1) score = 6;
+  else if (words > 60 && examples >= 1) score = 5;
+  else if (words > 40) score = 4;
+  else if (words > 20) score = 3;
+  else if (words > 10) score = 2;
+
+  return score;
+}
+
+function ao3Descriptor(level) {
+  switch(level) {
+    case 8: return "Excellent answer: comprehensive, balanced, with very clear reasoning and well-chosen examples.";
+    case 7: return "Very good answer: well structured, balanced and supported with clear examples.";
+    case 6: return "Good answer: clear structure and reasoning with relevant examples.";
+    case 5: return "Satisfactory answer: some structure and relevant examples, though not fully developed.";
+    case 4: return "Broadly satisfactory: some relevant points but lacking detail and balance.";
+    case 3: return "Basic answer: a viewpoint is expressed with limited development.";
+    case 2: return "Poor answer: very little reasoning or structure, and weak focus on the question.";
+    case 1: return "Very weak answer: almost no relevant content or reasoning.";
+    default: return "No meaningful answer provided.";
+  }
+}
+
+/* ------------------ FINAL MARKING & LOGGING ------------------ */
+
+function finishQuiz() {
+  let s1 = 0, s2 = 0, s3 = 0;
+  let ao2Answers = [];
+
+  /* --- Section 1: Knowledge --- */
+  document.querySelectorAll("#section1 .auto").forEach(q => {
+    const correct = q.dataset.correct.toLowerCase();
+    const name = q.dataset.q;
+
+    if (q.dataset.type === "choice") {
+      const chosen = document.querySelector(`input[name="${name}"]:checked`);
+      if (chosen && chosen.value.toLowerCase() === correct) s1++;
+    } else {
+      const inp = document.querySelector(`input[name="${name}"]`);
+      if (inp && inp.value.trim().toLowerCase() === correct) s1++;
+    }
+  });
+
+  /* --- Section 2: Understanding (AO2) --- */
+  document.querySelectorAll("#section2 .ao2").forEach(q => {
+    const text = document.querySelector(`textarea[name="${q.dataset.q}"]`).value;
+    const score = scoreAO2(text);
+    s2 += score;
+    ao2Answers.push(text);
+  });
+
+  // Combined AO2 feedback
+  const combinedAO2 = ao2Answers.join(" ");
+  const ao2Strengths = buildStrengths(combinedAO2, false);
+  const ao2Improvements = buildImprovements(combinedAO2, false);
+
+  document.getElementById("ao2-feedback").innerHTML =
+    "<ul>" +
+    ao2Strengths.map(x => `<li><strong>Strength:</strong> ${x}</li>`).join("") +
+    ao2Improvements.map(x => `<li><strong>Improvement:</strong> ${x}</li>`).join("") +
+    "</ul>";
+
+  /* --- Section 3: Evaluation and reasoning (AO3) --- */
+  const evalText = document.querySelector(`textarea[name="q7"]`).value;
+  s3 = scoreAO3(evalText);
+
+  const ao3Strengths = buildStrengths(evalText, true);
+  const ao3Improvements = buildImprovements(evalText, true);
+
+  document.getElementById("ao3-feedback").innerHTML =
+    `<p>${ao3Descriptor(s3)}</p><ul>` +
+    ao3Strengths.map(x => `<li><strong>Strength:</strong> ${x}</li>`).join("") +
+    ao3Improvements.map(x => `<li><strong>Improvement:</strong> ${x}</li>`).join("") +
+    "</ul>";
+
+  /* DISPLAY SCORES */
+  document.getElementById("s1score").textContent = s1;
+  document.getElementById("s2score").textContent = s2;
+  document.getElementById("s3score").textContent = s3;
+  document.getElementById("final-score").textContent = (s1 + s2 + s3);
+
+  /* --- LOG TO GOOGLE SHEETS --- */
+  const studentName  = localStorage.getItem("ci_studentName") || "";
+  const studentClass = localStorage.getItem("ci_studentClass") || "";
+
+  const payload = {
+    studentName,
+    studentClass,
+    quizName: QUIZ_NAME,
+    q1: (document.querySelector("input[name='q1']:checked")?.value || ""),
+    q2: (document.querySelector("input[name='q2']:checked")?.value || ""),
+    q3: (document.querySelector("input[name='q3']:checked")?.value || ""),
+    q4: ao2Answers[0] || "",
+    q5: ao2Answers[1] || "",
+    q6: ao2Answers[2] || "",
+    q7: evalText || "",
+    s1Score: s1,
+    s2Score: s2,
+    s3Score: s3,
+    totalScore: s1 + s2 + s3,
+    ao2Strengths: ao2Strengths.join(" | "),
+    ao2Improvements: ao2Improvements.join(" | "),
+    ao3Strengths: ao3Strengths.join(" | "),
+    ao3Improvements: ao3Improvements.join(" | ")
+  };
+
+  try {
+    fetch(GOOGLE_SHEETS_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+  } catch (err) {
+    console.error("Failed to send results to Google Sheets", err);
+  }
+
+  animateSectionTransition("section3", "final");
+}
+</script>
+
+</body>
+</html>
