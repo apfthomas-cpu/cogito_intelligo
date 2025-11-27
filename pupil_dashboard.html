@@ -5,21 +5,22 @@
   <title>Your Pupil Dashboard – Cogito, Intelligo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Font -->
+  <!-- Friendly font -->
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500&display=swap" rel="stylesheet">
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     :root {
-      --bg: #eef1f5;
+      --bg: #fffbe8;
       --card: #ffffff;
-      --primary: #2a3f54;
-      --accent: #00bcd4;
-      --text-main: #333;
-      --text-muted: #67718a;
-      --radius-lg: 1.1rem;
-      --shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.08);
+      --primary: #2a9d8f;   /* teal to match crest outline */
+      --primary-dark: #1f6f66;
+      --accent: #ffb703;    /* warm yellow */
+      --text-main: #264653;
+      --text-muted: #6c7a86;
+      --radius-lg: 1.2rem;
+      --shadow-soft: 0 10px 28px rgba(0, 0, 0, 0.08);
     }
 
     * { box-sizing: border-box; }
@@ -27,41 +28,81 @@
     body {
       margin: 0;
       font-family: "Fredoka", sans-serif;
-      background: radial-gradient(circle at top left,#fbfdff, var(--bg));
+      background: radial-gradient(circle at top left,#fffef4, var(--bg));
       color: var(--text-main);
       min-height: 100vh;
     }
 
+    /* HEADER + MASCOT */
+
     header {
-      background: linear-gradient(120deg, var(--primary), #1f2f3f);
-      color: white;
-      padding: 1rem 1.5rem;
+      background: linear-gradient(120deg, #fdf2b9, #fce08e);
+      padding: 1.4rem 1.3rem 0.8rem;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.16);
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      gap: 0.8rem;
+      justify-content: space-between;
+      gap: 1rem;
       flex-wrap: wrap;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+
+    .header-text {
+      flex: 1 1 280px;
     }
 
     .title {
-      font-size: 1.4rem;
+      font-size: 1.6rem;
       font-weight: 500;
+      color: var(--primary-dark);
     }
 
     .subtitle {
-      font-size: 0.9rem;
-      opacity: 0.85;
+      font-size: 0.95rem;
+      margin-top: 0.25rem;
+      color: #5b646d;
     }
 
-    .header-right {
-      font-size: 0.85rem;
-      opacity: 0.9;
+    .crest-wrap {
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
+
+    .crest-mascot {
+      width: 140px;
+      height: auto;
+      border-radius: 24px;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+      background: #fffbe8;
+    }
+
+    .mission-banner {
+      max-width: 1100px;
+      margin: 0.9rem auto 0.9rem;
+      background: linear-gradient(135deg, #2a9d8f, #3cb5a3);
+      color: #fefae0;
+      text-align: center;
+      padding: 0.8rem 1rem;
+      font-size: 1.05rem;
+      border-radius: 999px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+    }
+
+    .mission-banner strong {
+      font-weight: 500;
+    }
+
+    /* PAGE LAYOUT */
 
     .page {
       max-width: 1100px;
-      margin: 1.5rem auto 2.5rem;
+      margin: 1.4rem auto 2.5rem;
       padding: 0 1rem;
     }
 
@@ -70,7 +111,7 @@
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow-soft);
       padding: 1.1rem 1.3rem;
-      margin-bottom: 1.2rem;
+      margin-bottom: 1.3rem;
     }
 
     .card-header {
@@ -83,8 +124,15 @@
     }
 
     .card-title {
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .card-title span.emoji {
+      font-size: 1.3rem;
     }
 
     .card-subtitle {
@@ -98,15 +146,17 @@
       gap: 0.35rem;
       padding: 0.23rem 0.7rem;
       border-radius: 999px;
-      background: rgba(0,0,0,0.08);
+      background: rgba(255,255,255,0.75);
       font-size: 0.8rem;
+      color: var(--primary-dark);
+      border: 1px solid rgba(0,0,0,0.04);
     }
 
     .pill-dot {
       width: 8px;
       height: 8px;
       border-radius: 999px;
-      background: #4caf50;
+      background: #2ecc71;
     }
 
     .small {
@@ -127,6 +177,8 @@
       }
     }
 
+    /* SNAPSHOT STATS */
+
     .stat-row {
       display: grid;
       grid-template-columns: repeat(4,minmax(0,1fr));
@@ -141,23 +193,20 @@
     }
 
     .stat {
-      background: #f4f7fb;
-      border-radius: 0.9rem;
-      padding: 0.5rem 0.7rem;
-      font-size: 0.85rem;
+      background: #f7fbff;
+      border-radius: 1rem;
+      padding: 0.6rem 0.75rem;
+      font-size: 0.86rem;
       display: flex;
       flex-direction: column;
-      gap: 0.15rem;
+      gap: 0.2rem;
+      border: 1px solid #e0ebf5;
     }
 
     .stat-label { color: var(--text-muted); }
-    .stat-value { font-size: 1.05rem; font-weight: 500; }
+    .stat-value { font-size: 1.1rem; font-weight: 500; }
 
-    canvas {
-      background: #fcfeff;
-      border-radius: 0.9rem;
-      padding: 0.6rem;
-    }
+    /* TABLES */
 
     table {
       width: 100%;
@@ -189,7 +238,7 @@
     }
 
     tbody tr:hover td {
-      background: #eef5ff;
+      background: #eef7ff;
     }
 
     .tag {
@@ -197,13 +246,13 @@
       padding: 0.1rem 0.5rem;
       border-radius: 999px;
       font-size: 0.75rem;
-      background: rgba(0,0,0,0.05);
-      color: var(--text-muted);
+      background: rgba(42,157,143,0.1);
+      color: var(--primary-dark);
     }
 
     .improvement-chip {
       display: inline-block;
-      padding: 0.2rem 0.5rem;
+      padding: 0.23rem 0.6rem;
       margin: 0.15rem;
       border-radius: 999px;
       background: #ffeef0;
@@ -213,15 +262,16 @@
 
     .answer-block {
       background: #f7f9fc;
-      border-radius: 0.8rem;
-      padding: 0.55rem 0.7rem;
+      border-radius: 0.9rem;
+      padding: 0.6rem 0.8rem;
       margin-bottom: 0.45rem;
+      border: 1px solid #e1e6f0;
     }
 
     .answer-label {
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       color: var(--text-muted);
-      margin-bottom: 0.2rem;
+      margin-bottom: 0.18rem;
     }
 
     .answer-text {
@@ -238,14 +288,14 @@
       border: none;
       font-size: 0.85rem;
       cursor: pointer;
-      background: var(--primary);
+      background: var(--primary-dark);
       color: white;
-      box-shadow: 0 4px 14px rgba(42,63,84,0.5);
+      box-shadow: 0 4px 14px rgba(38,70,83,0.45);
     }
 
     .btn-outline {
       background: white;
-      color: var(--primary);
+      color: var(--primary-dark);
       border: 1px solid #cfd4dd;
       box-shadow: none;
     }
@@ -257,23 +307,34 @@
       margin-top: 0.6rem;
     }
 
+    canvas {
+      background: #fcfeff;
+      border-radius: 0.9rem;
+      padding: 0.6rem;
+    }
   </style>
 </head>
 
 <body>
 
 <header>
-  <div>
-    <div class="title" id="headerName">Your Pupil Dashboard</div>
-    <div class="subtitle">See your progress and what to work on next.</div>
-  </div>
-  <div class="header-right">
-    <span class="pill">
-      <span class="pill-dot"></span>
-      Live results from your quizzes
-    </span>
+  <div class="header-inner">
+    <div class="header-text">
+      <div class="title" id="headerName">Your Pupil Dashboard</div>
+      <div class="subtitle">
+        See how you’re growing in knowledge, understanding and evaluation.
+      </div>
+    </div>
+    <div class="crest-wrap">
+      <!-- Save your image as thinker_crest.png next to this file, or change the src -->
+      <img src="thinker_crest.png" alt="Thinking pupil crest" class="crest-mascot">
+    </div>
   </div>
 </header>
+
+<div class="mission-banner">
+  Aim for the higher gifts with <strong>joyfulness</strong> and <strong>kindness</strong>.
+</div>
 
 <div class="page">
 
@@ -281,16 +342,22 @@
   <section class="card">
     <div class="card-header">
       <div>
-        <div class="card-title" id="welcomeTitle">Welcome</div>
-        <div class="card-subtitle">
-          This page shows all of your quizzes, scores and feedback.
+        <div class="card-title">
+          <span class="emoji">🌱</span> <span id="welcomeTitle">Welcome</span>
         </div>
+        <div class="card-subtitle">
+          This page shows your quizzes, scores and feedback so you can keep improving.
+        </div>
+      </div>
+      <div class="pill">
+        <span class="pill-dot"></span>
+        Live from your Cogito, Intelligo quizzes
       </div>
     </div>
 
     <div class="stat-row">
       <div class="stat">
-        <div class="stat-label">Total quizzes completed</div>
+        <div class="stat-label">Quizzes completed</div>
         <div class="stat-value" id="statAttempts">–</div>
       </div>
       <div class="stat">
@@ -313,7 +380,9 @@
     <div>
       <div class="card-header" style="margin-bottom:0.4rem;">
         <div>
-          <div class="card-title">Scores over time</div>
+          <div class="card-title">
+            <span class="emoji">📈</span> Your scores over time
+          </div>
           <div class="card-subtitle">
             Your total score and AO1 / AO2 / AO3 across all quizzes.
           </div>
@@ -325,9 +394,11 @@
     <div>
       <div class="card-header" style="margin-bottom:0.4rem;">
         <div>
-          <div class="card-title">Topic overview</div>
+          <div class="card-title">
+            <span class="emoji">📚</span> Topics you’ve worked on
+          </div>
           <div class="card-subtitle">
-            How you are doing on each quiz topic.
+            How you’re doing on each quiz topic.
           </div>
         </div>
       </div>
@@ -339,14 +410,16 @@
   <section class="card">
     <div class="card-header">
       <div>
-        <div class="card-title">Things to keep improving</div>
+        <div class="card-title">
+          <span class="emoji">💪</span> Things to keep working on
+        </div>
         <div class="card-subtitle">
-          Based on your AO2 & AO3 feedback across quizzes.
+          Based on the “Improvements” feedback from your quizzes (AO2 and AO3).
         </div>
       </div>
     </div>
     <div class="small">
-      These are common ideas that appear in your “Improvements” feedback.
+      These are ideas that appear often in your teacher’s feedback.
     </div>
     <div id="improvementChips" style="margin-top:0.5rem; min-height:1.5rem;"></div>
   </section>
@@ -355,9 +428,11 @@
   <section class="card">
     <div class="card-header">
       <div>
-        <div class="card-title">Your quiz attempts</div>
+        <div class="card-title">
+          <span class="emoji">🔍</span> Your quiz attempts
+        </div>
         <div class="card-subtitle">
-          Click a quiz below to see your answers and feedback.
+          Tap or click a quiz in the table to see your answers and feedback.
         </div>
       </div>
       <div class="btn-row">
@@ -384,7 +459,7 @@
     </div>
 
     <div style="margin-top:0.8rem;">
-      <div class="card-subtitle" style="margin-bottom:0.35rem;">Selected quiz – your answers</div>
+      <div class="card-subtitle" style="margin-bottom:0.35rem;">Chosen quiz – your answers</div>
       <div id="answersContainer"></div>
     </div>
   </section>
@@ -396,18 +471,17 @@
   const JSON_URL = "https://script.google.com/macros/s/AKfycbyF4JX6B4nbu2JzJBzC0hZ5xHJdoQWU9-KiXCYLu84PfZbWi3VfCnLfW15xXQ2Uv3Cw/exec";
 
   /*
-    👉 QUESTION LABELS
-    Put the real text of your questions here.
-    These labels are used for every quiz attempt.
+    QUESTION LABELS
+    Using simple Q1–Q7 labels for now, as requested.
   */
   const QUESTION_LABELS = {
-    q1: "Question 1", // e.g. "Why did Jesus choose to be baptised?"
-    q2: "Question 2",
-    q3: "Question 3",
-    q4: "Question 4",
-    q5: "Question 5",
-    q6: "Question 6",
-    q7: "Question 7"
+    q1: "Q1",
+    q2: "Q2",
+    q3: "Q3",
+    q4: "Q4",
+    q5: "Q5",
+    q6: "Q6",
+    q7: "Q7"
   };
 
   let allData = [];
@@ -437,13 +511,14 @@
 
   if (!pupilNameParam) {
     document.body.innerHTML = `
-      <header><div class="title">Your Pupil Dashboard</div></header>
+      <header><div class="header-inner"><div class="header-text"><div class="title">Your Pupil Dashboard</div></div></div></header>
+      <div class="mission-banner">Aim for the higher gifts with <strong>joyfulness</strong> and <strong>kindness</strong>.</div>
       <div class="page">
         <div class="card">
           <div class="card-title">No pupil selected</div>
           <div class="card-subtitle">
             This page needs a link that includes your name, for example:<br>
-            <code>?name=Smith%2C%20A</code>
+            <code>pupil_dashboard.html?name=Smith%2C%20A</code>
           </div>
         </div>
       </div>
@@ -687,11 +762,11 @@
     });
 
     if (!texts.length) {
-      div.innerHTML = `<div class="small">Once your teacher adds written feedback (improvements), it will appear here.</div>`;
+      div.innerHTML = `<div class="small">When your teacher writes improvement feedback, it will appear here.</div>`;
       return;
     }
 
-    // simple phrase split – you can refine this later if you like
+    // Simple phrase split
     const phraseCounts = {};
     texts.forEach(t => {
       const parts = t.split(/[.;\n]/).map(p => p.trim()).filter(Boolean);
