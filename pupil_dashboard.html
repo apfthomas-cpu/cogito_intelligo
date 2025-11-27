@@ -7,7 +7,6 @@
 
   <!-- Friendly Font -->
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500&display=swap" rel="stylesheet">
-
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -28,8 +27,8 @@
 
     body {
       margin: 0;
-      font-family: "Fredoka", sans-serif;
-      font-size: 18px; /* Larger for pupils */
+      font-family: "Fredoka", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 18px; /* larger for readability */
       background: var(--cream-bg);
       color: var(--text-main);
       min-height: 100vh;
@@ -156,8 +155,6 @@
       font-weight: 500;
     }
 
-    /* BADGES -------------------------------------------------- */
-
     .badge-row {
       margin-top: 1rem;
       display: flex;
@@ -173,6 +170,47 @@
       color: #6b5f23;
       font-size: 0.9rem;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    /* MASTERY PILLS ------------------------------------------- */
+
+    .mastery-pill {
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      margin-left: 0.3rem;
+    }
+    .mastery-green { background:#d8f5d2; color:#276738; }
+    .mastery-amber { background:#fff4c2; color:#725d00; }
+    .mastery-red   { background:#ffe0e0; color:#8a1f1f; }
+
+    /* STRENGTH / IMPROVEMENT LISTS --------------------------- */
+
+    .strength-list,
+    .improvement-list {
+      list-style: disc;
+      padding-left: 1.4rem;
+      margin: 0;
+    }
+
+    .strength-list li {
+      background: #eefaf1;
+      border-left: 4px solid #58a96c;
+      margin-bottom: 0.6rem;
+      padding: 0.5rem 0.8rem;
+      border-radius: 6px;
+      font-size: 1.05rem;
+      line-height: 1.4;
+    }
+
+    .improvement-list li {
+      background: #fff7f7;
+      border-left: 4px solid #e29a9a;
+      margin-bottom: 0.6rem;
+      padding: 0.5rem 0.8rem;
+      border-radius: 6px;
+      font-size: 1.05rem;
+      line-height: 1.4;
     }
 
     /* TABLE --------------------------------------------------- */
@@ -266,7 +304,6 @@
         page-break-inside: avoid;
       }
     }
-
   </style>
 </head>
 
@@ -288,7 +325,7 @@
 
 <div class="page">
 
-  <!-- SUMMARY CARD --------------------------------------- -->
+  <!-- SUMMARY & STRENGTHS -------------------------------- -->
 
   <section class="card">
     <div class="card-header">
@@ -300,7 +337,7 @@
           This dashboard shows your quiz attempts, scores, strengths, and what to work on next.
         </div>
       </div>
-      <div class="pill" style="background:white; padding:0.4rem 0.9rem; border-radius:999px;">
+      <div class="badge-pill" style="background:white; border-color:#d9e2ec;">
         Live from your Cogito, Intelligo quizzes
       </div>
     </div>
@@ -311,7 +348,7 @@
         <div class="stat-value" id="statAttempts">–</div>
       </div>
       <div class="stat">
-        <div class="stat-label">Average total score</div>
+        <div class="stat-label">Average total score (29)</div>
         <div class="stat-value" id="statAvgTotal">–</div>
       </div>
       <div class="stat">
@@ -324,22 +361,26 @@
       </div>
     </div>
 
-    <!-- BADGES -->
+    <!-- Badges -->
     <div id="badgeRow" class="badge-row"></div>
 
-    <!-- Strengths Summary -->
-    <div id="strengthSummarySentence"
-         style="margin-top:1rem; font-size:1.1rem; color:var(--teal-dark); font-weight:500;"></div>
+    <!-- Strengths list -->
+    <div style="margin-top:1.2rem;">
+      <div class="card-title" style="font-size:1.2rem;">
+        <span class="emoji">🌟</span> Things you’re doing well
+      </div>
+      <ul id="strengthList" class="strength-list" style="margin-top:0.5rem;"></ul>
+    </div>
   </section>
 
-  <!-- CHARTS ------------------------------------------------ -->
+  <!-- CHARTS --------------------------------------------- -->
 
   <section class="card" style="padding-bottom:2rem;">
     <div class="card-header">
       <div>
         <div class="card-title"><span class="emoji">📈</span> Your scores over time</div>
         <div class="card-subtitle">
-          Knowledge (3) · Understanding (18) · Evaluation & reasoning (8)
+          Knowledge (max 3) · Understanding (max 18) · Evaluation and reasoning (max 8)
         </div>
       </div>
     </div>
@@ -350,13 +391,13 @@
     <div class="card-header">
       <div>
         <div class="card-title"><span class="emoji">📚</span> Topics you’ve worked on</div>
-        <div class="card-subtitle">Average scores by topic</div>
+        <div class="card-subtitle">Average total score by topic</div>
       </div>
     </div>
     <canvas id="topicChart" height="230"></canvas>
   </section>
 
-  <!-- IMPROVEMENTS ----------------------------------------- -->
+  <!-- IMPROVEMENTS --------------------------------------- -->
 
   <section class="card">
     <div class="card-header">
@@ -368,15 +409,20 @@
       </div>
     </div>
 
-    <!-- One-sentence improvement summary -->
+    <!-- Summary bullets -->
     <div id="improvementSummarySentence"
-         style="margin-bottom:1rem; font-size:1.1rem; color:var(--teal-dark); font-weight:500;"></div>
+         style="margin-bottom:1rem; font-size:1.1rem; color:var(--teal-dark);"></div>
 
-    <!-- Chips -->
-    <div id="improvementChips"></div>
+    <!-- Detailed list + collapsible -->
+    <div id="improvementWrapper">
+      <ul id="improvementList" class="improvement-list"></ul>
+      <button id="improveToggle" class="btn-outline btn" style="margin-top:0.8rem;">
+        Show more ▼
+      </button>
+    </div>
   </section>
 
-  <!-- ATTEMPTS + ANSWERS ----------------------------------- -->
+  <!-- ATTEMPTS & ANSWERS --------------------------------- -->
 
   <section class="card">
     <div class="card-header">
@@ -416,8 +462,6 @@
 
 </div>
 
-<!-- JAVASCRIPT --------------------------------------------- -->
-
 <script>
   const JSON_URL =
     "https://script.google.com/macros/s/AKfycbyF4JX6B4nbu2JzJBzC0hZ5xHJdoQWU9-KiXCYLu84PfZbWi3VfCnLfW15xXQ2Uv3Cw/exec";
@@ -435,6 +479,23 @@
     q5: "Q5",
     q6: "Q6",
     q7: "Q7"
+  };
+
+  const improvementIcons = {
+    "example": "📖",
+    "baptism": "📖",
+    "connective": "🔗",
+    "because": "🔗",
+    "therefore": "🔗",
+    "structure": "🧱",
+    "firstly": "🧱",
+    "secondly": "🧱",
+    "conclusion": "🧩",
+    "evaluate": "⭐",
+    "evaluation": "⭐",
+    "explain": "💡",
+    "depth": "🌱",
+    "reasoning": "⭐"
   };
 
   function getParam(key) {
@@ -467,7 +528,6 @@
         s3: Number(r.s3Score || 0),
         total: Number(r.totalScore || 0),
       }));
-
       initialiseForPupil();
     })
     .catch(() => alert("There was a problem loading your dashboard."));
@@ -484,27 +544,27 @@
     const avgTotal = avg(pupilRows.map(r => r.total));
     document.getElementById("statAvgTotal").textContent = avgTotal.toFixed(1);
 
-    // Determine strongest and weakest area
     const avgKnow = avg(pupilRows.map(r => r.s1));
     const avgUnder = avg(pupilRows.map(r => r.s2));
     const avgEval = avg(pupilRows.map(r => r.s3));
 
     const areas = [
-      { name: "Knowledge ✓", value: avgKnow },
-      { name: "Understanding 💡", value: avgUnder },
-      { name: "Evaluation and reasoning ⭐", value: avgEval }
-    ];
+      { key:"Knowledge", name:"Knowledge ✓", value: avgKnow, max: MAX_KNOW },
+      { key:"Understanding", name:"Understanding 💡", value: avgUnder, max: MAX_UNDER },
+      { key:"Evaluation and reasoning", name:"Evaluation and reasoning ⭐", value: avgEval, max: MAX_EVAL }
+    ].sort((a,b)=>b.value-a.value);
 
-    areas.sort((a,b)=>b.value-a.value);
+    document.getElementById("statStrongest").innerHTML =
+      `${areas[0].name} ${masteryIndicator(areas[0].value, areas[0].max)}`;
 
-    document.getElementById("statStrongest").textContent = areas[0].name;
-    document.getElementById("statWeakest").textContent = areas[2].name;
+    document.getElementById("statWeakest").innerHTML =
+      `${areas[2].name} ${masteryIndicator(areas[2].value, areas[2].max)}`;
 
     document.getElementById("attemptHint").textContent =
       `You have completed ${attempts} quiz${attempts>1?"zes":""}.`;
 
     awardBadges(pupilRows);
-    generateStrengthSummary();
+    generateStrengthsList();
     renderImprovements();
     renderTrendChart();
     renderTopicChart();
@@ -525,6 +585,47 @@
            d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
   }
 
+  function standardDeviation(values) {
+    if (!values.length) return 0;
+    const mean = avg(values);
+    const sqDiff = values.map(v => Math.pow(v - mean, 2));
+    return Math.sqrt(avg(sqDiff));
+  }
+
+  function masteryIndicator(value, max) {
+    const percent = value / max;
+    if (percent >= 0.75) return `<span class="mastery-pill mastery-green">Strong</span>`;
+    if (percent >= 0.45) return `<span class="mastery-pill mastery-amber">Developing</span>`;
+    return `<span class="mastery-pill mastery-red">Needs focus</span>`;
+  }
+
+  function simplifyText(text) {
+    if (!text) return "";
+    let t = text.trim();
+
+    // Light simplifications
+    t = t.replace(/in order to/gi, "to");
+    t = t.replace(/at the moment/gi, "now");
+    t = t.replace(/for a stronger evaluation/gi, "to improve your evaluation");
+    t = t.replace(/improve the structure of your answer by using/gi, "use");
+    t = t.replace(/\s+/g, " ");
+
+    // Capitalise first letter
+    return t.charAt(0).toUpperCase() + t.slice(1);
+  }
+
+  function iconise(text) {
+    let icon = "";
+    const lower = text.toLowerCase();
+    for (let key in improvementIcons) {
+      if (lower.includes(key)) {
+        icon = improvementIcons[key] + " ";
+        break;
+      }
+    }
+    return icon + simplifyText(text);
+  }
+
   /* BADGES ------------------------------------------------ */
 
   function awardBadges(rows) {
@@ -540,30 +641,30 @@
     }
     if (streak >= 3) badges.push(`🔥 Improvement Streak (${streak})`);
 
-    // High Score
-    if (rows.some(r => r.total >= 24)) badges.push("🏆 High Scorer (24+)");
+    // High Score (24+ out of 29)
+    if (rows.some(r => r.total >= 24)) badges.push("🏆 High scorer (24+)");
 
-    // Full Marks
-    if (rows.some(r => r.total === MAX_TOTAL)) badges.push("🌟 Full Marks Moment!");
+    // Full marks
+    if (rows.some(r => r.total === MAX_TOTAL)) badges.push("🌟 Full marks moment!");
 
-    // Topic Explorer
+    // Topic explorer
     const topics = new Set(rows.map(r => r.quizName));
-    if (topics.size >= 3) badges.push("🧭 Quiz Explorer");
+    if (topics.size >= 3) badges.push("🧭 Quiz explorer");
 
     // Consistency
     const allScores = rows.map(r => r.total);
     const sd = standardDeviation(allScores);
-    if (sd < 3) badges.push("🎯 Consistency Champion");
+    if (sd < 3) badges.push("🎯 Consistency champion");
 
     // AO specialists
     const avgKnow = avg(rows.map(r=>r.s1));
     const avgUnder = avg(rows.map(r=>r.s2));
     const avgEval = avg(rows.map(r=>r.s3));
-
     const maxAO = Math.max(avgKnow, avgUnder, avgEval);
-    if (avgKnow === maxAO) badges.push("📘 Knowledge Master");
-    if (avgUnder === maxAO) badges.push("💡 Understanding Pro");
-    if (avgEval === maxAO) badges.push("⭐ Evaluation & Reasoning Ace");
+
+    if (avgKnow === maxAO) badges.push("📘 Knowledge master");
+    if (avgUnder === maxAO) badges.push("💡 Understanding pro");
+    if (avgEval === maxAO) badges.push("⭐ Evaluation & reasoning ace");
 
     badges.forEach(b => {
       const el = document.createElement("span");
@@ -573,58 +674,44 @@
     });
   }
 
-  function standardDeviation(values) {
-    if (!values.length) return 0;
-    const mean = avg(values);
-    const sqDiff = values.map(v => Math.pow(v - mean, 2));
-    return Math.sqrt(avg(sqDiff));
-  }
+  /* STRENGTHS LIST --------------------------------------- */
 
-  /* STRENGTH SUMMARY ------------------------------------- */
+  function generateStrengthsList() {
+    const list = document.getElementById("strengthList");
+    list.innerHTML = "";
 
-  function generateStrengthSummary() {
-    const div = document.getElementById("strengthSummarySentence");
-    let strengths = [];
-
+    const texts = [];
     pupilRows.forEach(r => {
-      if (r.ao2Strengths) strengths.push(r.ao2Strengths);
-      if (r.ao3Strengths) strengths.push(r.ao3Strengths);
+      if (r.ao2Strengths) texts.push(r.ao2Strengths);
+      if (r.ao3Strengths) texts.push(r.ao3Strengths);
     });
-
-    if (!strengths.length) {
-      div.textContent = "";
-      return;
-    }
+    if (!texts.length) return;
 
     const phrases = [];
-    strengths.forEach(t => {
+    texts.forEach(t => {
       t.split(/[.;\n]/).forEach(p => {
         const clean = p.trim();
         if (clean) phrases.push(clean);
       });
     });
 
-    const freq = {};
-    phrases.forEach(p => freq[p] = (freq[p] || 0) + 1);
-
-    const sorted = Object.entries(freq).sort((a,b)=>b[1]-a[1]);
-    const top = sorted.slice(0,3).map(([text]) => text);
-
-    if (top.length === 1)
-      div.textContent = `You are doing really well at ${top[0].toLowerCase()}.`;
-    else if (top.length === 2)
-      div.textContent = `You are doing really well at ${top[0].toLowerCase()} and ${top[1].toLowerCase()}.`;
-    else if (top.length === 3)
-      div.textContent = `You are doing really well at ${top[0].toLowerCase()}, ${top[1].toLowerCase()} and ${top[2].toLowerCase()}.`;
+    phrases.forEach(p => {
+      const li = document.createElement("li");
+      li.textContent = simplifyText(p);
+      list.appendChild(li);
+    });
   }
 
   /* IMPROVEMENTS ----------------------------------------- */
 
   function renderImprovements() {
-    const chipsDiv = document.getElementById("improvementChips");
+    const list = document.getElementById("improvementList");
     const summaryDiv = document.getElementById("improvementSummarySentence");
-    chipsDiv.innerHTML = "";
-    summaryDiv.textContent = "";
+    const toggle = document.getElementById("improveToggle");
+
+    list.innerHTML = "";
+    summaryDiv.innerHTML = "";
+    toggle.style.display = "none";
 
     const texts = [];
     pupilRows.forEach(r => {
@@ -633,7 +720,7 @@
     });
 
     if (!texts.length) {
-      chipsDiv.innerHTML = `<div class="card-subtitle">Your teacher’s improvement feedback will appear here.</div>`;
+      list.innerHTML = `<div class="card-subtitle">Your teacher’s improvement feedback will appear here.</div>`;
       return;
     }
 
@@ -645,37 +732,51 @@
       });
     });
 
-    // Summary sentence
-    if (phrases.length === 1)
-      summaryDiv.textContent = `You are mainly working on ${phrases[0].toLowerCase()}.`;
-    else {
-      const freq = {};
-      phrases.forEach(p => freq[p] = (freq[p] || 0) + 1);
-      const sorted = Object.entries(freq).sort((a,b)=>b[1]-a[1]);
-      const top = sorted.slice(0,3).map(([text]) => text);
-
-      if (top.length === 1)
-        summaryDiv.textContent = `You are mainly working on ${top[0].toLowerCase()}.`;
-      else if (top.length === 2)
-        summaryDiv.textContent = `You are mainly working on ${top[0].toLowerCase()} and ${top[1].toLowerCase()}.`;
-      else if (top.length === 3)
-        summaryDiv.textContent = `You are mainly working on ${top[0].toLowerCase()}, ${top[1].toLowerCase()} and ${top[2].toLowerCase()}.`;
-    }
-
-    // Chips (top 8)
+    // Summary: top 3 themes as bullets
     const freq = {};
     phrases.forEach(p => freq[p] = (freq[p] || 0) + 1);
-    const sorted = Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,8);
+    const sorted = Object.entries(freq).sort((a,b)=>b[1]-a[1]);
+    const topThree = sorted.slice(0,3).map(([text]) => simplifyText(text));
 
-    sorted.forEach(([phrase]) => {
-      const chip = document.createElement("span");
-      chip.className = "badge-pill";
-      chip.textContent = phrase;
-      chip.style.background = "#ffeef0";
-      chip.style.border = "1px solid #e5c5c5";
-      chip.style.color = "#b71c1c";
-      chipsDiv.appendChild(chip);
+    let summaryHTML = `<div style="margin-bottom:0.3rem;">You are mainly working on:</div><ul>`;
+    topThree.forEach(t => { summaryHTML += `<li>${t}</li>`; });
+    summaryHTML += `</ul>`;
+    summaryDiv.innerHTML = summaryHTML;
+
+    // Full improvement list with icons
+    phrases.forEach(p => {
+      const li = document.createElement("li");
+      li.textContent = iconise(p);
+      list.appendChild(li);
     });
+
+    setupImprovementCollapse();
+  }
+
+  function setupImprovementCollapse() {
+    const list = document.getElementById("improvementList");
+    const items = list.querySelectorAll("li");
+    const toggle = document.getElementById("improveToggle");
+    const LIMIT = 4;
+
+    if (items.length <= LIMIT) {
+      toggle.style.display = "none";
+      return;
+    }
+
+    toggle.style.display = "inline-flex";
+    items.forEach((li, i) => {
+      if (i >= LIMIT) li.style.display = "none";
+    });
+
+    let expanded = false;
+    toggle.onclick = () => {
+      expanded = !expanded;
+      items.forEach((li, i) => {
+        if (i >= LIMIT) li.style.display = expanded ? "list-item" : "none";
+      });
+      toggle.textContent = expanded ? "Show less ▲" : "Show more ▼";
+    };
   }
 
   /* TABLE -------------------------------------------------- */
@@ -683,7 +784,6 @@
   function renderAttemptTable() {
     const tbody = document.getElementById("attemptTableBody");
     tbody.innerHTML = "";
-
     const rows = pupilRows.slice().reverse();
 
     rows.forEach(r => {
@@ -746,7 +846,6 @@
 
   function renderTrendChart() {
     const ctx = document.getElementById("trendChart").getContext("2d");
-
     if (trendChart) trendChart.destroy();
 
     trendChart = new Chart(ctx, {
@@ -771,7 +870,6 @@
 
   function renderTopicChart() {
     const ctx = document.getElementById("topicChart").getContext("2d");
-
     if (topicChart) topicChart.destroy();
 
     const groups = {};
@@ -799,7 +897,6 @@
       }
     });
   }
-
 </script>
 
 </body>
