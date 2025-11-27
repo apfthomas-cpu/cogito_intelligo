@@ -598,5 +598,57 @@ function finishQuiz() {
 }
 </script>
 
+
+<!-- PERSONAL SUMMARY BUTTON FOR ALL QUIZZES -->
+<style>
+  .view-dashboard-btn {
+    padding: 0.9rem 1.4rem;
+    font-size: 1.05rem;
+    border: none;
+    border-radius: 12px;
+    background: #2a3f54;
+    color: white;
+    cursor: pointer;
+    width: 100%;
+    max-width: 340px;
+    margin: 1.5rem auto 0;
+    display: block;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    transition: 0.2s ease;
+  }
+  .view-dashboard-btn:hover {
+    background: #36556f;
+    transform: translateY(-2px);
+  }
+</style>
+
+<script>
+  function insertDashboardButton() {
+    const pupilName = localStorage.getItem("ci_studentName");
+    if (!pupilName) return;
+    const encoded = encodeURIComponent(pupilName);
+
+    const btn = document.createElement("button");
+    btn.className = "view-dashboard-btn";
+    btn.textContent = "VIEW YOUR PERSONAL SUMMARY";
+    btn.onclick = () => {
+      window.location.href = `pupil_dashboard.html?name=${encoded}`;
+    };
+
+    const finalSection = document.getElementById("final");
+    if (finalSection) finalSection.appendChild(btn);
+  }
+
+  const observer = new MutationObserver(() => {
+    const finalSection = document.getElementById("final");
+    if (finalSection && !finalSection.classList.contains("hidden")) {
+      insertDashboardButton();
+    }
+  });
+
+  observer.observe(document.body, { attributes: true, subtree: true });
+</script>
+
 </body>
 </html>

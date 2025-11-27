@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Your Pupil Dashboard – Cogito, Intelligo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500&display=swap" rel="stylesheet">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+      --bg: #eef1f5;
+      --card: #ffffff;
+      --primary: #2a3f54;
+      --accent: #00bcd4;
+      --text-main: #333;
+      --text-muted: #67718a;
+      --radius-lg: 1.1rem;
+      --shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Fredoka", sans-serif;
+      background: radial-gradient(circle at top left,#fbfdff, var(--bg));
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(120deg, var(--primary), #1f2f3f);
+      color: white;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+
+    .title {
+      font-size: 1.4rem;
+      font-weight: 500;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      opacity: 0.85;
+    }
+
+    .header-right {
+      font-size: 0.85rem;
+      opacity: 0.9;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 1.5rem auto 2.5rem;
+      padding: 0 1rem;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+      padding: 1.1rem 1.3rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    .card-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.23rem 0.7rem;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.08);
+      font-size: 0.8rem;
+    }
+
+    .pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #4caf50;
+    }
+
+    .small {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .grid-two {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 850px) {
+      .grid-two {
+        grid-template-columns: minmax(0,1fr);
+      }
+    }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(4,minmax(0,1fr));
+      gap: 0.6rem;
+      margin-top: 0.6rem;
+    }
+
+    @media (max-width: 650px) {
+      .stat-row {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+      }
+    }
+
+    .stat {
+      background: #f4f7fb;
+      border-radius: 0.9rem;
+      padding: 0.5rem 0.7rem;
+      font-size: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .stat-label { color: var(--text-muted); }
+    .stat-value { font-size: 1.05rem; font-weight: 500; }
+
+    canvas {
+      background: #fcfeff;
+      border-radius: 0.9rem;
+      padding: 0.6rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 0.9rem;
+      overflow: hidden;
+      font-size: 0.9rem;
+    }
+
+    thead {
+      background: var(--primary);
+      color: white;
+    }
+
+    th, td {
+      padding: 0.55rem 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid #edf0f7;
+    }
+
+    th {
+      font-weight: 500;
+      font-size: 0.8rem;
+      letter-spacing: 0.02em;
+    }
+
+    tbody tr:nth-child(even) td {
+      background: #f7f9fc;
+    }
+
+    tbody tr:hover td {
+      background: #eef5ff;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 0.1rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      background: rgba(0,0,0,0.05);
+      color: var(--text-muted);
+    }
+
+    .improvement-chip {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      margin: 0.15rem;
+      border-radius: 999px;
+      background: #ffeef0;
+      color: #b71c1c;
+      font-size: 0.75rem;
+    }
+
+    .answer-block {
+      background: #f7f9fc;
+      border-radius: 0.8rem;
+      padding: 0.55rem 0.7rem;
+      margin-bottom: 0.45rem;
+    }
+
+    .answer-label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 0.2rem;
+    }
+
+    .answer-text {
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.55rem 1rem;
+      border-radius: 999px;
+      border: none;
+      font-size: 0.85rem;
+      cursor: pointer;
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 4px 14px rgba(42,63,84,0.5);
+    }
+
+    .btn-outline {
+      background: white;
+      color: var(--primary);
+      border: 1px solid #cfd4dd;
+      box-shadow: none;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.6rem;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div>
+    <div class="title" id="headerName">Your Pupil Dashboard</div>
+    <div class="subtitle">See your progress and what to work on next.</div>
+  </div>
+  <div class="header-right">
+    <span class="pill">
+      <span class="pill-dot"></span>
+      Live results from your quizzes
+    </span>
+  </div>
+</header>
+
+<div class="page">
+
+  <!-- SUMMARY -->
+  <section class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title" id="welcomeTitle">Welcome</div>
+        <div class="card-subtitle">
+          This page shows all of your quizzes, scores and feedback.
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat">
+        <div class="stat-label">Total quizzes completed</div>
+        <div class="stat-value" id="statAttempts">–</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Average total score</div>
+        <div class="stat-value" id="statAvgTotal">–</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Strongest area</div>
+        <div class="stat-value" id="statStrongest">–</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Biggest focus area</div>
+        <div class="stat-value" id="statWeakest">–</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHARTS -->
+  <section class="card grid-two">
+    <div>
+      <div class="card-header" style="margin-bottom:0.4rem;">
+        <div>
+          <div class="card-title">Scores over time</div>
+          <div class="card-subtitle">
+            Your total score and AO1 / AO2 / AO3 across all quizzes.
+          </div>
+        </div>
+      </div>
+      <canvas id="trendChart" height="220"></canvas>
+    </div>
+
+    <div>
+      <div class="card-header" style="margin-bottom:0.4rem;">
+        <div>
+          <div class="card-title">Topic overview</div>
+          <div class="card-subtitle">
+            How you are doing on each quiz topic.
+          </div>
+        </div>
+      </div>
+      <canvas id="topicChart" height="220"></canvas>
+    </div>
+  </section>
+
+  <!-- IMPROVEMENT SUMMARY -->
+  <section class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Things to keep improving</div>
+        <div class="card-subtitle">
+          Based on your AO2 & AO3 feedback across quizzes.
+        </div>
+      </div>
+    </div>
+    <div class="small">
+      These are common ideas that appear in your “Improvements” feedback.
+    </div>
+    <div id="improvementChips" style="margin-top:0.5rem; min-height:1.5rem;"></div>
+  </section>
+
+  <!-- ATTEMPT LIST + ANSWERS -->
+  <section class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Your quiz attempts</div>
+        <div class="card-subtitle">
+          Click a quiz below to see your answers and feedback.
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-outline btn" onclick="window.history.back()">⬅ Back</button>
+      </div>
+    </div>
+
+    <div class="small" id="attemptHint"></div>
+
+    <div style="max-height:260px; overflow:auto; margin-top:0.4rem;">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Quiz</th>
+            <th>Total</th>
+            <th>AO1</th>
+            <th>AO2</th>
+            <th>AO3</th>
+          </tr>
+        </thead>
+        <tbody id="attemptTableBody"></tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:0.8rem;">
+      <div class="card-subtitle" style="margin-bottom:0.35rem;">Selected quiz – your answers</div>
+      <div id="answersContainer"></div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  // 👉 SAME Apps Script URL as your teacher dashboard
+  const JSON_URL = "https://script.google.com/macros/s/AKfycbyF4JX6B4nbu2JzJBzC0hZ5xHJdoQWU9-KiXCYLu84PfZbWi3VfCnLfW15xXQ2Uv3Cw/exec";
+
+  /*
+    👉 QUESTION LABELS
+    Put the real text of your questions here.
+    These labels are used for every quiz attempt.
+  */
+  const QUESTION_LABELS = {
+    q1: "Question 1", // e.g. "Why did Jesus choose to be baptised?"
+    q2: "Question 2",
+    q3: "Question 3",
+    q4: "Question 4",
+    q5: "Question 5",
+    q6: "Question 6",
+    q7: "Question 7"
+  };
+
+  let allData = [];
+  let pupilRows = [];
+  let trendChart, topicChart;
+
+  /* ---------- Utils ---------- */
+
+  function getQueryParam(name) {
+    const params = new URLSearchParams(window.location.search);
+    return params.get(name) || "";
+  }
+
+  function formatDate(d) {
+    if (!d) return "";
+    return d.toLocaleString();
+  }
+
+  function avg(arr) {
+    if (!arr.length) return 0;
+    return arr.reduce((a,b)=>a+b,0) / arr.length;
+  }
+
+  /* ---------- Fetch & init ---------- */
+
+  const pupilNameParam = getQueryParam("name"); // e.g. "Smith, A"
+
+  if (!pupilNameParam) {
+    document.body.innerHTML = `
+      <header><div class="title">Your Pupil Dashboard</div></header>
+      <div class="page">
+        <div class="card">
+          <div class="card-title">No pupil selected</div>
+          <div class="card-subtitle">
+            This page needs a link that includes your name, for example:<br>
+            <code>?name=Smith%2C%20A</code>
+          </div>
+        </div>
+      </div>
+    `;
+  } else {
+    document.getElementById("headerName").textContent = pupilNameParam + " – Your Pupil Dashboard";
+    document.getElementById("welcomeTitle").textContent = "Welcome, " + pupilNameParam;
+
+    fetch(JSON_URL)
+      .then(res => res.json())
+      .then(data => {
+        allData = data.map(row => ({
+          ...row,
+          Timestamp: row.Timestamp ? new Date(row.Timestamp) : null,
+          s1Score: Number(row.s1Score || 0),
+          s2Score: Number(row.s2Score || 0),
+          s3Score: Number(row.s3Score || 0),
+          totalScore: Number(row.totalScore || 0)
+        }));
+        initialiseForPupil(pupilNameParam);
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Something went wrong loading your results.");
+      });
+  }
+
+  function initialiseForPupil(pupilName) {
+    pupilRows = allData.filter(r => (r.studentName || "").trim() === pupilName.trim());
+    pupilRows.sort((a,b) => (a.Timestamp || 0) - (b.Timestamp || 0)); // oldest → newest
+
+    const attemptCount = pupilRows.length;
+    document.getElementById("statAttempts").textContent = attemptCount || "0";
+
+    if (!attemptCount) {
+      document.getElementById("statAvgTotal").textContent = "–";
+      document.getElementById("statStrongest").textContent = "–";
+      document.getElementById("statWeakest").textContent = "–";
+      document.getElementById("attemptHint").textContent = "You have not completed any quizzes yet.";
+      return;
+    }
+
+    const totalAvg = avg(pupilRows.map(r => r.totalScore));
+    const s1Avg = avg(pupilRows.map(r => r.s1Score));
+    const s2Avg = avg(pupilRows.map(r => r.s2Score));
+    const s3Avg = avg(pupilRows.map(r => r.s3Score));
+
+    document.getElementById("statAvgTotal").textContent = totalAvg.toFixed(1);
+
+    const areas = [
+      { name: "Knowledge (AO1)", value: s1Avg },
+      { name: "Understanding (AO2)", value: s2Avg },
+      { name: "Evaluation (AO3)", value: s3Avg }
+    ];
+    areas.sort((a,b)=>b.value-a.value);
+
+    document.getElementById("statStrongest").textContent = areas[0].name;
+    document.getElementById("statWeakest").textContent = areas[areas.length-1].name;
+
+    document.getElementById("attemptHint").textContent =
+      "You have completed " + attemptCount + " quiz" + (attemptCount > 1 ? "zes." : ".");
+
+    renderTrendChart();
+    renderTopicChart();
+    renderAttemptTable();
+    renderImprovementSummary();
+    if (pupilRows.length) {
+      showAnswersForAttempt(pupilRows[pupilRows.length - 1]); // last attempt by default
+    }
+  }
+
+  /* ---------- Charts ---------- */
+
+  function renderTrendChart() {
+    const ctx = document.getElementById("trendChart").getContext("2d");
+    const labels = pupilRows.map(r =>
+      r.Timestamp
+        ? r.Timestamp.toLocaleDateString() + " " +
+          r.Timestamp.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})
+        : ""
+    );
+    const total = pupilRows.map(r => r.totalScore);
+    const s1 = pupilRows.map(r => r.s1Score);
+    const s2 = pupilRows.map(r => r.s2Score);
+    const s3 = pupilRows.map(r => r.s3Score);
+
+    if (trendChart) trendChart.destroy();
+
+    trendChart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels,
+        datasets: [
+          { label: "Total", data: total, borderWidth: 2, pointRadius: 3, fill: false },
+          { label: "AO1 (Knowledge)", data: s1, borderWidth: 1, pointRadius: 2, fill: false },
+          { label: "AO2 (Understanding)", data: s2, borderWidth: 1, pointRadius: 2, fill: false },
+          { label: "AO3 (Evaluation)", data: s3, borderWidth: 1, pointRadius: 2, fill: false }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+  }
+
+  function renderTopicChart() {
+    const ctx = document.getElementById("topicChart").getContext("2d");
+
+    // average total per quizName for this pupil
+    const groups = {};
+    pupilRows.forEach(r => {
+      const q = r.quizName || "Unnamed quiz";
+      if (!groups[q]) groups[q] = [];
+      groups[q].push(r.totalScore);
+    });
+
+    const labels = Object.keys(groups);
+    const averages = labels.map(q => avg(groups[q]));
+
+    if (topicChart) topicChart.destroy();
+
+    topicChart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels,
+        datasets: [{
+          label: "Average total score",
+          data: averages,
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+  }
+
+  /* ---------- Attempt table + answers ---------- */
+
+  function renderAttemptTable() {
+    const tbody = document.getElementById("attemptTableBody");
+    tbody.innerHTML = "";
+
+    if (!pupilRows.length) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td colspan="6" style="text-align:center;padding:0.8rem;">No attempts yet.</td>`;
+      tbody.appendChild(tr);
+      return;
+    }
+
+    // newest first in the table (but we kept array oldest→newest)
+    const rows = pupilRows.slice().reverse();
+
+    rows.forEach(r => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${formatDate(r.Timestamp)}</td>
+        <td>${r.quizName || ""}</td>
+        <td>${r.totalScore}</td>
+        <td>${r.s1Score}</td>
+        <td>${r.s2Score}</td>
+        <td>${r.s3Score}</td>
+      `;
+      tr.addEventListener("click", () => showAnswersForAttempt(r));
+      tbody.appendChild(tr);
+    });
+  }
+
+  function showAnswersForAttempt(row) {
+    const container = document.getElementById("answersContainer");
+    container.innerHTML = "";
+
+    if (!row) {
+      container.innerHTML = `<div class="small">Choose a quiz from the table above to see your answers.</div>`;
+      return;
+    }
+
+    const header = document.createElement("div");
+    header.className = "small";
+    header.innerHTML = `
+      <span class="tag">${row.quizName || "Quiz"}</span>
+      &nbsp; · &nbsp; ${formatDate(row.Timestamp)}
+      &nbsp; · &nbsp; Total score: <strong>${row.totalScore}</strong>
+    `;
+    container.appendChild(header);
+
+    const questionKeys = ["q1","q2","q3","q4","q5","q6","q7"];
+
+    questionKeys.forEach(key => {
+      const label = QUESTION_LABELS[key] || key.toUpperCase();
+      const answer = row[key];
+      if (!answer) return;
+
+      const block = document.createElement("div");
+      block.className = "answer-block";
+      block.innerHTML = `
+        <div class="answer-label">${label}</div>
+        <div class="answer-text">${answer}</div>
+      `;
+      container.appendChild(block);
+    });
+
+    if (row.ao2Strengths || row.ao2Improvements || row.ao3Strengths || row.ao3Improvements) {
+      const fbTitle = document.createElement("div");
+      fbTitle.className = "card-subtitle";
+      fbTitle.style.marginTop = "0.4rem";
+      fbTitle.textContent = "Feedback for this quiz";
+      container.appendChild(fbTitle);
+    }
+
+    function addFeedback(label, text) {
+      if (!text) return;
+      const block = document.createElement("div");
+      block.className = "answer-block";
+      block.innerHTML = `
+        <div class="answer-label">${label}</div>
+        <div class="answer-text">${text}</div>
+      `;
+      container.appendChild(block);
+    }
+
+    addFeedback("AO2 – strengths", row.ao2Strengths);
+    addFeedback("AO2 – improvements", row.ao2Improvements);
+    addFeedback("AO3 – strengths", row.ao3Strengths);
+    addFeedback("AO3 – improvements", row.ao3Improvements);
+  }
+
+  /* ---------- Improvement summary (chips) ---------- */
+
+  function renderImprovementSummary() {
+    const div = document.getElementById("improvementChips");
+    div.innerHTML = "";
+
+    const texts = [];
+
+    pupilRows.forEach(r => {
+      if (r.ao2Improvements) texts.push(r.ao2Improvements);
+      if (r.ao3Improvements) texts.push(r.ao3Improvements);
+    });
+
+    if (!texts.length) {
+      div.innerHTML = `<div class="small">Once your teacher adds written feedback (improvements), it will appear here.</div>`;
+      return;
+    }
+
+    // simple phrase split – you can refine this later if you like
+    const phraseCounts = {};
+    texts.forEach(t => {
+      const parts = t.split(/[.;\n]/).map(p => p.trim()).filter(Boolean);
+      parts.forEach(p => {
+        const key = p.toLowerCase();
+        phraseCounts[key] = (phraseCounts[key] || 0) + 1;
+      });
+    });
+
+    const sorted = Object.entries(phraseCounts)
+      .sort((a,b)=>b[1]-a[1])
+      .slice(0,8); // top 8 phrases
+
+    sorted.forEach(([phrase,count]) => {
+      const chip = document.createElement("span");
+      chip.className = "improvement-chip";
+      chip.textContent = phrase.charAt(0).toUpperCase() + phrase.slice(1);
+      div.appendChild(chip);
+    });
+
+    if (!sorted.length) {
+      div.innerHTML = `<div class="small">Your written feedback will appear here in future.</div>`;
+    }
+  }
+</script>
+
+</body>
+</html>

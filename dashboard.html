@@ -8,172 +8,655 @@
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500&display=swap" rel="stylesheet">
 
-  <!-- Chart.js CDN -->
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
+    :root {
+      --bg: #eef1f5;
+      --card: #ffffff;
+      --primary: #2a3f54;
+      --primary-soft: #36556f;
+      --accent: #00bcd4;
+      --text-main: #333;
+      --text-muted: #67718a;
+      --radius-lg: 1.1rem;
+      --shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: "Fredoka", sans-serif;
-      background: #eef1f5;
-      color: #333;
+      background: radial-gradient(circle at top left,#fbfdff, var(--bg));
+      color: var(--text-main);
+      min-height: 100vh;
     }
+
+    /* Top bar */
     header {
-      background: #2a3f54;
+      background: linear-gradient(120deg, var(--primary), #1f2f3f);
       color: white;
-      padding: 1.5rem;
-      text-align: center;
-      font-size: 1.8rem;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
     }
-    .container {
-      max-width: 1200px;
-      margin: 2rem auto;
-      padding: 1rem;
-    }
-    .filters {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-    select {
-      padding: 0.7rem;
-      border-radius: 0.5rem;
-      border: 1px solid #aaa;
-      font-size: 1rem;
-      background: #fff;
-    }
-    .section-title {
-      margin-top: 2rem;
+
+    header .title {
       font-size: 1.4rem;
       font-weight: 500;
+      letter-spacing: 0.03em;
     }
+
+    header .subtitle {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      opacity: 0.9;
+    }
+
+    .tag-pill {
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.35);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .tag-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #4caf50;
+    }
+
+    /* Layout */
+    .page {
+      max-width: 1200px;
+      margin: 1.8rem auto 2.5rem;
+      padding: 0 1rem;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+      padding: 1.2rem 1.4rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.8rem;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    .card-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Filters */
+    .filter-bar {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.8rem;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    select {
+      padding: 0.6rem 0.7rem;
+      border-radius: 0.7rem;
+      border: 1px solid #cfd4dd;
+      font-size: 0.9rem;
+      background: #fafdff;
+      outline: none;
+      transition: border 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+
+    select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(0,188,212,0.25);
+      background: white;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      border-radius: 999px;
+      border: none;
+      padding: 0.45rem 0.9rem;
+      background: rgba(42,63,84,0.07);
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text-muted);
+      transition: all 0.18s ease;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 4px 14px rgba(42,63,84,0.45);
+    }
+
+    .tab-btn span.badge {
+      font-size: 0.7rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.15);
+    }
+
+    .tab-section {
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .tab-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Tables */
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 1rem;
-      background: #fff;
-      border-radius: 0.75rem;
+      border-radius: 0.9rem;
       overflow: hidden;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+      font-size: 0.9rem;
     }
-    th, td {
-      padding: 0.6rem 0.8rem;
-      border-bottom: 1px solid #eee;
-      text-align: left;
-      font-size: 0.95rem;
-    }
-    th {
-      background: #2a3f54;
+
+    thead {
+      background: var(--primary);
       color: white;
-      position: sticky;
-      top: 0;
-      z-index: 1;
     }
-    tr:nth-child(even) td {
-      background: #f8f9fb;
+
+    th, td {
+      padding: 0.55rem 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid #edf0f7;
     }
-    canvas {
-      margin-top: 1rem;
-      background: white;
-      padding: 1rem;
-      border-radius: 1rem;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+
+    th {
+      font-weight: 500;
+      font-size: 0.82rem;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
     }
+
+    tbody tr:nth-child(even) td {
+      background: #f7f9fc;
+    }
+
+    tbody tr:hover td {
+      background: #eef5ff;
+      cursor: pointer;
+    }
+
     .small {
-      font-size: 0.85rem;
-      color: #666;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    /* Layout grid in overview */
+    .overview-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.6fr);
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+      gap: 1rem;
+      margin-top: 0.2rem;
+    }
+
+    canvas {
+      background: #fcfeff;
+      border-radius: 0.9rem;
+      padding: 0.6rem;
+    }
+
+    /* Median card */
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.6rem;
+      margin-top: 0.5rem;
+    }
+
+    .metric-pill {
+      background: #f4f7fb;
+      border-radius: 0.8rem;
+      padding: 0.5rem 0.7rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      font-size: 0.8rem;
+    }
+
+    .metric-label {
+      color: var(--text-muted);
+    }
+
+    .metric-value {
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .metric-diff-pos { color: #2e7d32; }
+    .metric-diff-neg { color: #c62828; }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 40;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal {
+      background: #f9fbff;
+      border-radius: 1.2rem;
+      max-width: 780px;
+      max-height: 80vh;
+      width: calc(100% - 2rem);
+      box-shadow: 0 22px 60px rgba(15,23,42,0.55);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 0.8rem 1.1rem;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .modal-title {
+      font-weight: 500;
+    }
+
+    .modal-close {
+      border: none;
+      background: rgba(15,23,42,0.35);
+      color: white;
+      border-radius: 999px;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-body {
+      padding: 0.9rem 1.1rem 1.1rem;
+      overflow-y: auto;
+    }
+
+    .answer-block {
+      background: white;
+      border-radius: 0.8rem;
+      padding: 0.7rem 0.8rem;
+      margin-bottom: 0.6rem;
+      box-shadow: 0 6px 16px rgba(15,23,42,0.06);
+    }
+
+    .answer-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.2rem;
+    }
+
+    .answer-text {
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .badge-soft {
+      display: inline-block;
+      font-size: 0.75rem;
+      padding: 0.12rem 0.45rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.2);
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .overview-grid {
+        grid-template-columns: minmax(0,1fr);
+      }
+      .charts-grid {
+        grid-template-columns: minmax(0,1fr);
+      }
+    }
+
+    @media (max-width: 700px) {
+      header {
+        align-items: flex-start;
+      }
+      .filter-bar {
+        grid-template-columns: minmax(0, 1fr);
+      }
     }
   </style>
 </head>
 
 <body>
 
-<header>Teacher Dashboard – Cogito, Intelligo</header>
+<header>
+  <div>
+    <div class="title">Teacher Dashboard – Cogito, Intelligo</div>
+    <div class="subtitle">Live insights across Knowledge, Understanding & Evaluation</div>
+  </div>
+  <div class="header-right">
+    <span class="tag-pill">
+      <span class="tag-dot"></span>
+      Live data from Google Sheets
+    </span>
+  </div>
+</header>
 
-<div class="container">
+<div class="page">
 
-  <div class="filters">
-    <select id="classFilter">
-      <option value="">Filter by Class</option>
-    </select>
+  <!-- Filters + Tabs -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Filters</div>
+        <div class="card-subtitle">Choose a class, student and topic to explore.</div>
+      </div>
+    </div>
 
-    <select id="studentFilter">
-      <option value="">Filter by Student</option>
-    </select>
+    <div class="filter-bar">
+      <div class="filter-group">
+        <span>Class</span>
+        <select id="classFilter">
+          <option value="">All classes</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <span>Student</span>
+        <select id="studentFilter">
+          <option value="">All students</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <span>Quiz / Topic</span>
+        <select id="quizFilter">
+          <option value="">All quizzes</option>
+        </select>
+      </div>
+    </div>
 
-    <select id="quizFilter">
-      <option value="">Filter by Quiz</option>
-    </select>
+    <div style="margin-top:1rem;">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="overviewTab">
+          Overview
+          <span class="badge soft">attempts & trends</span>
+        </button>
+        <button class="tab-btn" data-tab="marksheetTab">
+          Class Marksheet
+          <span class="badge soft">per topic</span>
+        </button>
+        <button class="tab-btn" data-tab="insightTab">
+          Student Insight
+          <span class="badge soft">vs median</span>
+        </button>
+      </div>
+      <div class="small">
+        Tip: choose a class & quiz first, then a student to unlock full analysis.
+      </div>
+    </div>
   </div>
 
-  <h3 class="section-title">Student Attempts</h3>
-  <p class="small">Filtered by the selections above. Each row represents one completed quiz attempt.</p>
-  <table id="resultsTable">
-    <thead>
-      <tr>
-        <th>Date & Time</th>
-        <th>Student</th>
-        <th>Class</th>
-        <th>Quiz</th>
-        <th>Total Score</th>
-        <th>Section 2 (Understanding)</th>
-        <th>Section 3 (Evaluation)</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <!-- ====== OVERVIEW TAB ====== -->
+  <section id="overviewTab" class="tab-section active">
+    <div class="overview-grid">
+      <!-- Attempts table -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Student Attempts</div>
+            <div class="card-subtitle">
+              Each row is a completed attempt. Click a row to read full answers.
+            </div>
+          </div>
+        </div>
+        <div class="small" style="margin-bottom:0.3rem;">
+          Filtered by the selections above · most recent first.
+        </div>
+        <div style="max-height:340px; overflow:auto;">
+          <table id="resultsTable">
+            <thead>
+              <tr>
+                <th>Date &amp; Time</th>
+                <th>Student</th>
+                <th>Class</th>
+                <th>Quiz</th>
+                <th>Total</th>
+                <th>Knowledge</th>
+                <th>Understanding</th>
+                <th>Evaluation</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
 
-  <h3 class="section-title">Total Score Over Time</h3>
-  <p class="small">Shows total scores for the filtered attempts in chronological order.</p>
-  <canvas id="scoreChart"></canvas>
+      <!-- Charts -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Progress & Topics</div>
+            <div class="card-subtitle">
+              Overall movement in total scores and quiz averages.
+            </div>
+          </div>
+        </div>
+        <div class="charts-grid">
+          <div>
+            <div class="small">Total Score Over Time</div>
+            <canvas id="scoreChart" height="180"></canvas>
+          </div>
+          <div>
+            <div class="small">Average Score per Quiz</div>
+            <canvas id="quizChart" height="180"></canvas>
+          </div>
+        </div>
+        <div style="margin-top:1rem;">
+          <div class="small">AO2 vs AO3 – selected student</div>
+          <canvas id="aoChart" height="190"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <h3 class="section-title">Average Score per Quiz</h3>
-  <p class="small">Compares average total scores for each quiz within the current filter.</p>
-  <canvas id="quizChart"></canvas>
+  <!-- ====== MARKSHEET TAB ====== -->
+  <section id="marksheetTab" class="tab-section">
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Class Marksheet for Topic</div>
+          <div class="card-subtitle">
+            One row per student – latest attempt for the selected class & quiz.
+          </div>
+        </div>
+      </div>
+      <div class="small" style="margin-bottom:0.4rem;">
+        Choose a class and quiz above. Click a student to read their answers.
+      </div>
+      <div style="max-height:420px; overflow:auto;">
+        <table id="marksheetTable">
+          <thead>
+            <tr>
+              <th>Student</th>
+              <th>Class</th>
+              <th>Quiz</th>
+              <th>Attempts</th>
+              <th>Knowledge (S1)</th>
+              <th>Understanding (S2)</th>
+              <th>Evaluation (S3)</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
 
-  <h3 class="section-title">AO2 vs AO3 – Selected Student</h3>
-  <p class="small">Average Section 2 (Understanding) vs Section 3 (Evaluation and reasoning) scores for the selected student.</p>
-  <canvas id="aoChart"></canvas>
+  <!-- ====== STUDENT INSIGHT TAB ====== -->
+  <section id="insightTab" class="tab-section">
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Student vs Class Median</div>
+          <div class="card-subtitle">
+            Compare a student's AO scores against the class median for this quiz.
+          </div>
+        </div>
+      </div>
+      <div class="small">
+        Select a class, quiz and student above. We use each student’s latest attempt.
+      </div>
+
+      <div style="margin-top:0.9rem; display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,1fr); gap:1rem; align-items:flex-start;">
+        <div>
+          <canvas id="medianChart" height="210"></canvas>
+        </div>
+        <div>
+          <div class="small">Scores vs class median</div>
+          <div id="medianSummary" style="margin-top:0.4rem;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
 </div>
 
+<!-- ====== DRILL-DOWN MODAL ====== -->
+<div id="answerModalBackdrop" class="modal-backdrop">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modalTitle"></div>
+        <div style="font-size:0.78rem; opacity:0.9;" id="modalSubtitle"></div>
+      </div>
+      <button class="modal-close" id="modalCloseBtn">&times;</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
 <script>
-  // 🔗 REPLACE this with your actual Apps Script Web App URL
-const JSON_URL = "https://script.google.com/macros/s/AKfycbyF4JX6B4nbu2JzJBzC0hZ5xHJdoQWU9-KiXCYLu84PfZbWi3VfCnLfW15xXQ2Uv3Cw/exec";
+  // 👉 PUT YOUR OWN APPS SCRIPT URL HERE
+  const JSON_URL = "https://script.google.com/macros/s/AKfycbyF4JX6B4nbu2JzJBzC0hZ5xHJdoQWU9-KiXCYLu84PfZbWi3VfCnLfW15xXQ2Uv3Cw/exec";
 
   let allData = [];
+  let scoreChart, quizChart, aoChart, medianChart;
 
-  // Fetch data from Google Sheets via Apps Script
+  /* ========== FETCH DATA ========== */
+
   fetch(JSON_URL)
     .then(res => res.json())
     .then(data => {
-      // Normalise numeric fields
       allData = data.map(row => ({
         ...row,
+        Timestamp: row.Timestamp ? new Date(row.Timestamp) : null,
         s1Score: Number(row.s1Score || 0),
         s2Score: Number(row.s2Score || 0),
         s3Score: Number(row.s3Score || 0),
-        totalScore: Number(row.totalScore || 0),
-        Timestamp: row.Timestamp
+        totalScore: Number(row.totalScore || 0)
       }));
-      populateFilters(allData);
-      updateDashboard();
+      initialiseFilters(allData);
+      updateAllViews();
     })
     .catch(err => {
-      console.error("Failed to load data from JSON_URL:", err);
+      console.error("Failed to load data", err);
       alert("Could not load data from Google Sheets. Check the Web App URL and permissions.");
     });
 
-  // Populate dropdown filters
-  function populateFilters(data) {
+  /* ========== FILTERS & TABS ========== */
+
+  function initialiseFilters(data) {
     const classes = [...new Set(data.map(r => r.studentClass).filter(Boolean))].sort();
     const students = [...new Set(data.map(r => r.studentName).filter(Boolean))].sort();
     const quizzes = [...new Set(data.map(r => r.quizName).filter(Boolean))].sort();
 
-    fillSelect("classFilter", classes, "Filter by Class");
-    fillSelect("studentFilter", students, "Filter by Student");
-    fillSelect("quizFilter", quizzes, "Filter by Quiz");
+    fillSelect("classFilter", classes, "All classes");
+    fillSelect("studentFilter", students, "All students");
+    fillSelect("quizFilter", quizzes, "All quizzes");
+
+    document.querySelectorAll("#classFilter,#studentFilter,#quizFilter")
+      .forEach(sel => sel.addEventListener("change", updateAllViews));
+
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll(".tab-section").forEach(sec => sec.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById(btn.dataset.tab).classList.add("active");
+      });
+    });
   }
 
   function fillSelect(id, values, placeholder) {
@@ -187,69 +670,91 @@ const JSON_URL = "https://script.google.com/macros/s/AKfycbyF4JX6B4nbu2JzJBzC0hZ
     });
   }
 
-  // Update dashboard when filters change
-  document.querySelectorAll("select").forEach(sel =>
-    sel.addEventListener("change", updateDashboard)
-  );
-
-  function updateDashboard() {
-    const cls = document.getElementById("classFilter").value;
-    const stu = document.getElementById("studentFilter").value;
-    const quiz = document.getElementById("quizFilter").value;
-
-    let filtered = allData.slice();
-
-    if (cls) filtered = filtered.filter(r => r.studentClass === cls);
-    if (stu) filtered = filtered.filter(r => r.studentName === stu);
-    if (quiz) filtered = filtered.filter(r => r.quizName === quiz);
-
-    // Sort by timestamp (oldest to newest)
-    filtered.sort((a, b) => new Date(a.Timestamp) - new Date(b.Timestamp));
-
-    renderTable(filtered);
-    renderScoreChart(filtered);
-    renderQuizChart(filtered);
-
-    // AO2 vs AO3 only really makes sense if a specific student is chosen
-    renderAOChart(allData, stu);
+  function getCurrentFilters() {
+    return {
+      cls: document.getElementById("classFilter").value,
+      stu: document.getElementById("studentFilter").value,
+      quiz: document.getElementById("quizFilter").value
+    };
   }
 
-  /* ---------- TABLE RENDERING ---------- */
+  function filteredDataForOverview() {
+    const { cls, stu, quiz } = getCurrentFilters();
+    let rows = allData.slice();
+    if (cls) rows = rows.filter(r => r.studentClass === cls);
+    if (stu) rows = rows.filter(r => r.studentName === stu);
+    if (quiz) rows = rows.filter(r => r.quizName === quiz);
+    rows.sort((a, b) => (b.Timestamp || 0) - (a.Timestamp || 0));
+    return rows;
+  }
 
-  function renderTable(rows) {
+  function latestAttemptsByStudent(cls, quiz) {
+    // Map key: studentName | value: { row, attempts }
+    const map = new Map();
+    allData.forEach(r => {
+      if (cls && r.studentClass !== cls) return;
+      if (quiz && r.quizName !== quiz) return;
+      const key = r.studentName || "Unknown";
+      const current = map.get(key);
+      if (!current) {
+        map.set(key, { row: r, attempts: 1 });
+      } else {
+        current.attempts += 1;
+        if ((r.Timestamp || 0) > (current.row.Timestamp || 0)) {
+          current.row = r;
+        }
+      }
+    });
+    return Array.from(map.entries()).map(([studentName, obj]) => ({
+      ...obj.row,
+      attempts: obj.attempts
+    }));
+  }
+
+  function updateAllViews() {
+    const overviewRows = filteredDataForOverview();
+    renderOverviewTable(overviewRows);
+    renderScoreChart(overviewRows);
+    renderQuizChart(overviewRows);
+    renderAOChart(overviewRows);
+    renderMarksheet();
+    renderStudentInsight();
+  }
+
+  /* ========== OVERVIEW: TABLE & CHARTS ========== */
+
+  function renderOverviewTable(rows) {
     const tbody = document.querySelector("#resultsTable tbody");
     tbody.innerHTML = "";
 
+    if (!rows.length) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td colspan="8" style="text-align:center;padding:0.9rem;">No attempts match the current filters.</td>`;
+      tbody.appendChild(tr);
+      return;
+    }
+
     rows.forEach(r => {
       const tr = document.createElement("tr");
-      const dateStr = r.Timestamp ? new Date(r.Timestamp).toLocaleString() : "";
+      const ts = r.Timestamp ? r.Timestamp.toLocaleString() : "";
       tr.innerHTML = `
-        <td>${dateStr}</td>
+        <td>${ts}</td>
         <td>${r.studentName || ""}</td>
         <td>${r.studentClass || ""}</td>
         <td>${r.quizName || ""}</td>
         <td>${r.totalScore}</td>
+        <td>${r.s1Score}</td>
         <td>${r.s2Score}</td>
         <td>${r.s3Score}</td>
       `;
+      tr.addEventListener("click", () => openStudentModal(r));
       tbody.appendChild(tr);
     });
-
-    if (rows.length === 0) {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `<td colspan="7" style="text-align:center; padding:1rem;">No attempts match the current filters.</td>`;
-      tbody.appendChild(tr);
-    }
   }
-
-  /* ---------- CHART: SCORE OVER TIME ---------- */
-
-  let scoreChart;
 
   function renderScoreChart(rows) {
     const ctx = document.getElementById("scoreChart").getContext("2d");
-
-    const labels = rows.map(r => r.Timestamp ? new Date(r.Timestamp).toLocaleString() : "");
+    const labels = rows.map(r => r.Timestamp ? r.Timestamp.toLocaleString() : "");
     const scores = rows.map(r => r.totalScore);
 
     if (scoreChart) scoreChart.destroy();
@@ -262,91 +767,81 @@ const JSON_URL = "https://script.google.com/macros/s/AKfycbyF4JX6B4nbu2JzJBzC0hZ
           label: "Total Score",
           data: scores,
           borderWidth: 2,
-          pointRadius: 4,
+          pointRadius: 3,
           fill: false
         }]
       },
       options: {
         responsive: true,
-        scales: {
-          y: { beginAtZero: true }
-        }
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true } }
       }
     });
   }
 
-  /* ---------- CHART: AVERAGE SCORE PER QUIZ ---------- */
-
-  let quizChart;
-
   function renderQuizChart(rows) {
     const ctx = document.getElementById("quizChart").getContext("2d");
-
-    const quizGroups = {};
+    const groups = {};
     rows.forEach(r => {
-      if (!quizGroups[r.quizName]) quizGroups[r.quizName] = [];
-      quizGroups[r.quizName].push(r.totalScore);
+      if (!r.quizName) return;
+      if (!groups[r.quizName]) groups[r.quizName] = [];
+      groups[r.quizName].push(r.totalScore);
     });
-
-    const labels = Object.keys(quizGroups);
+    const labels = Object.keys(groups);
     const averages = labels.map(q => {
-      const arr = quizGroups[q];
-      return arr.reduce((a,b) => a + b, 0) / arr.length;
+      const arr = groups[q];
+      return arr.reduce((a,b)=>a+b,0) / arr.length;
     });
 
     if (quizChart) quizChart.destroy();
-
     quizChart = new Chart(ctx, {
       type: "bar",
       data: {
         labels,
         datasets: [{
-          label: "Average Total Score",
+          label: "Average total",
           data: averages,
           borderWidth: 1
         }]
       },
       options: {
         responsive: true,
-        scales: {
-          y: { beginAtZero: true }
-        }
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true } }
       }
     });
   }
 
-  /* ---------- CHART: AO2 vs AO3 FOR SELECTED STUDENT ---------- */
-
-  let aoChart;
-
-  function renderAOChart(data, studentName) {
+  function renderAOChart(rows) {
     const ctx = document.getElementById("aoChart").getContext("2d");
+    const { stu } = getCurrentFilters();
 
-    // Hide chart if no student chosen
-    if (!studentName) {
+    if (!stu) {
       if (aoChart) aoChart.destroy();
       const canvas = document.getElementById("aoChart");
-      const tempCtx = canvas.getContext("2d");
-      tempCtx.clearRect(0, 0, canvas.width, canvas.height);
+      const c = canvas.getContext("2d");
+      c.clearRect(0,0,canvas.width,canvas.height);
       return;
     }
 
-    const rows = data.filter(r => r.studentName === studentName);
+    const studentRows = rows.filter(r => r.studentName === stu);
+    if (!studentRows.length) {
+      if (aoChart) aoChart.destroy();
+      return;
+    }
 
-    const ao2 = rows.map(r => r.s2Score);
-    const ao3 = rows.map(r => r.s3Score);
-
-    const avgAO2 = ao2.length ? ao2.reduce((a,b)=>a+b,0)/ao2.length : 0;
-    const avgAO3 = ao3.length ? ao3.reduce((a,b)=>a+b,0)/ao3.length : 0;
+    const ao2Arr = studentRows.map(r => r.s2Score);
+    const ao3Arr = studentRows.map(r => r.s3Score);
+    const avgAO2 = avg(ao2Arr);
+    const avgAO3 = avg(ao3Arr);
 
     if (aoChart) aoChart.destroy();
-
     aoChart = new Chart(ctx, {
       type: "radar",
       data: {
-        labels: ["Understanding (Section 2)", "Evaluation (Section 3)"],
+        labels: ["Understanding (S2)", "Evaluation (S3)"],
         datasets: [{
-          label: `${studentName} – Average scores`,
+          label: `${stu} – average`,
           data: [avgAO2, avgAO3],
           borderWidth: 2,
           fill: true
@@ -355,14 +850,214 @@ const JSON_URL = "https://script.google.com/macros/s/AKfycbyF4JX6B4nbu2JzJBzC0hZ
       options: {
         responsive: true,
         scales: {
-          r: {
-            beginAtZero: true,
-            suggestedMax: 20
-          }
+          r: { beginAtZero: true }
         }
       }
     });
   }
+
+  /* ========== MARKSHEET TAB ========== */
+
+  function renderMarksheet() {
+    const tbody = document.querySelector("#marksheetTable tbody");
+    tbody.innerHTML = "";
+    const { cls, quiz } = getCurrentFilters();
+
+    if (!cls || !quiz) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td colspan="8" style="text-align:center;padding:0.9rem;">Choose a class and quiz using the filters above.</td>`;
+      tbody.appendChild(tr);
+      return;
+    }
+
+    const rows = latestAttemptsByStudent(cls, quiz);
+    if (!rows.length) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td colspan="8" style="text-align:center;padding:0.9rem;">No attempts found for this class and quiz.</td>`;
+      tbody.appendChild(tr);
+      return;
+    }
+
+    rows.sort((a,b) => (a.studentName || "").localeCompare(b.studentName || ""));
+
+    rows.forEach(r => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${r.studentName || ""}</td>
+        <td>${r.studentClass || ""}</td>
+        <td>${r.quizName || ""}</td>
+        <td>${r.attempts || 1}</td>
+        <td>${r.s1Score}</td>
+        <td>${r.s2Score}</td>
+        <td>${r.s3Score}</td>
+        <td>${r.totalScore}</td>
+      `;
+      tr.addEventListener("click", () => openStudentModal(r));
+      tbody.appendChild(tr);
+    });
+  }
+
+  /* ========== STUDENT INSIGHT TAB ========== */
+
+  function renderStudentInsight() {
+    const { cls, quiz, stu } = getCurrentFilters();
+    const summaryDiv = document.getElementById("medianSummary");
+    summaryDiv.innerHTML = "";
+
+    const ctx = document.getElementById("medianChart").getContext("2d");
+
+    if (!cls || !quiz || !stu) {
+      if (medianChart) medianChart.destroy();
+      summaryDiv.innerHTML = `<div class="small">Select a class, quiz and student to see their performance vs the class median.</div>`;
+      const canvas = document.getElementById("medianChart");
+      const c = canvas.getContext("2d");
+      c.clearRect(0,0,canvas.width,canvas.height);
+      return;
+    }
+
+    const rows = latestAttemptsByStudent(cls, quiz);
+    if (!rows.length) return;
+
+    const studentRow = rows.find(r => r.studentName === stu);
+    if (!studentRow) {
+      summaryDiv.innerHTML = `<div class="small">No attempt found yet for this student on this quiz.</div>`;
+      if (medianChart) medianChart.destroy();
+      return;
+    }
+
+    const s1Values = rows.map(r => r.s1Score);
+    const s2Values = rows.map(r => r.s2Score);
+    const s3Values = rows.map(r => r.s3Score);
+
+    const medS1 = median(s1Values);
+    const medS2 = median(s2Values);
+    const medS3 = median(s3Values);
+
+    const studentScores = [studentRow.s1Score, studentRow.s2Score, studentRow.s3Score];
+    const medians = [medS1, medS2, medS3];
+
+    if (medianChart) medianChart.destroy();
+    medianChart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: ["Knowledge (S1)", "Understanding (S2)", "Evaluation (S3)"],
+        datasets: [
+          { label: stu, data: studentScores, borderWidth: 1 },
+          { label: "Class median", data: medians, borderWidth: 1 }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+
+    const diffS1 = diffToString(studentRow.s1Score - medS1);
+    const diffS2 = diffToString(studentRow.s2Score - medS2);
+    const diffS3 = diffToString(studentRow.s3Score - medS3);
+
+    summaryDiv.innerHTML = `
+      <div class="metrics-row">
+        <div class="metric-pill">
+          <div class="metric-label">Knowledge (S1)</div>
+          <div class="metric-value">${studentRow.s1Score} <span class="${diffS1.className}">(${diffS1.text})</span></div>
+          <div class="small">Median: ${medS1.toFixed(1)}</div>
+        </div>
+        <div class="metric-pill">
+          <div class="metric-label">Understanding (S2)</div>
+          <div class="metric-value">${studentRow.s2Score} <span class="${diffS2.className}">(${diffS2.text})</span></div>
+          <div class="small">Median: ${medS2.toFixed(1)}</div>
+        </div>
+        <div class="metric-pill">
+          <div class="metric-label">Evaluation (S3)</div>
+          <div class="metric-value">${studentRow.s3Score} <span class="${diffS3.className}">(${diffS3.text})</span></div>
+          <div class="small">Median: ${medS3.toFixed(1)}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  function avg(arr) {
+    if (!arr.length) return 0;
+    return arr.reduce((a,b)=>a+b,0) / arr.length;
+  }
+
+  function median(values) {
+    if (!values.length) return 0;
+    const sorted = values.slice().sort((a,b)=>a-b);
+    const mid = Math.floor(sorted.length/2);
+    return sorted.length % 2 ? sorted[mid] : (sorted[mid-1] + sorted[mid]) / 2;
+  }
+
+  function diffToString(diff) {
+    if (Math.abs(diff) < 0.01) return { text: "at median", className: "" };
+    const sign = diff > 0 ? "+" : "";
+    const cls = diff > 0 ? "metric-diff-pos" : "metric-diff-neg";
+    return { text: `${sign}${diff.toFixed(1)} vs median`, className: cls };
+  }
+
+  /* ========== MODAL: DRILL DOWN ANSWERS ========== */
+
+  const modalBackdrop = document.getElementById("answerModalBackdrop");
+  const modalBody = document.getElementById("modalBody");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalSubtitle = document.getElementById("modalSubtitle");
+  const modalCloseBtn = document.getElementById("modalCloseBtn");
+
+  function openStudentModal(row) {
+    if (!row) return;
+
+    modalTitle.textContent = row.studentName || "Student";
+    const ts = row.Timestamp ? row.Timestamp.toLocaleString() : "";
+    modalSubtitle.innerHTML = `
+      <span class="badge-soft">${row.studentClass || ""}</span>
+      &nbsp;·&nbsp; ${row.quizName || "Quiz"}
+      ${ts ? " · " + ts : ""}
+    `;
+
+    modalBody.innerHTML = "";
+
+    function addBlock(label, text) {
+      if (!text) return;
+      const block = document.createElement("div");
+      block.className = "answer-block";
+      block.innerHTML = `
+        <div class="answer-label">${label}</div>
+        <div class="answer-text">${text}</div>
+      `;
+      modalBody.appendChild(block);
+    }
+
+    addBlock("Q1", row.q1);
+    addBlock("Q2", row.q2);
+    addBlock("Q3", row.q3);
+    addBlock("Q4", row.q4);
+    addBlock("Q5", row.q5);
+    addBlock("Q6", row.q6);
+    addBlock("Q7", row.q7);
+    addBlock("AO2 – strengths", row.ao2Strengths);
+    addBlock("AO2 – improvements", row.ao2Improvements);
+    addBlock("AO3 – strengths", row.ao3Strengths);
+    addBlock("AO3 – improvements", row.ao3Improvements);
+
+    if (!modalBody.children.length) {
+      addBlock("No answers stored", "This attempt does not yet have saved responses for individual questions.");
+    }
+
+    modalBackdrop.classList.add("active");
+  }
+
+  function closeModal() {
+    modalBackdrop.classList.remove("active");
+  }
+
+  modalCloseBtn.addEventListener("click", closeModal);
+  modalBackdrop.addEventListener("click", (e) => {
+    if (e.target === modalBackdrop) closeModal();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeModal();
+  });
 </script>
 
 </body>
